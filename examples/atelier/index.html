@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier · 为想法留一点空间</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #f5f5f7; background: #101012; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+    nav { padding: 28px 7%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333336; }
+    .brand { font-family: inherit; font-size: 26px; font-weight: 600; letter-spacing: -1px; }
+    nav .links { display: flex; align-items: center; gap: 32px; font-size: 13px; }
+    a { color: inherit; text-decoration: none; }
+    .small-button { padding: 10px 19px; background: transparent; color: inherit; border: 1px solid #66666b; border-radius: 24px; }
+    main { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; padding: 70px 7% 60px; align-items: center; }
+    .intro { color: #a1a1a6; font-size: 13px; margin-bottom: 24px; }
+    h1 { font-weight: 500; font-size: 54px; line-height: 1.28; letter-spacing: -2px; margin: 0 0 24px; }
+    .description { font-size: 15px; color: #a1a1a6; line-height: 1.9; max-width: 350px; }
+    .actions { display: flex; align-items: center; gap: 22px; margin-top: 34px; }
+    button { cursor: pointer; font-family: inherit; }
+    .primary { background: #0071e3; color: white; border: 0; border-radius: 26px; padding: 15px 27px; font-size: 14px; }
+    .secondary { border: 0; background: transparent; color: #66aaff; font-size: 14px; }
+    .art { height: 370px; position: relative; background: #1d1d1f; border-radius: 28px; overflow: hidden; }
+    .sun { width: 150px; height: 150px; border: 1px solid #55555b; border-radius: 50%; position: absolute; right: 42px; top: 38px; }
+    .hill-back { position: absolute; top: 61px; left: 40px; width: calc(100% - 95px); height: 210px; background: #303034; border: 1px solid #44444a; border-radius: 18px; transform: rotate(-12deg); }
+    .hill-front { position: absolute; top: 101px; right: 34px; width: calc(100% - 100px); height: 210px; background: #161618; border: 1px solid #50505a; border-radius: 18px; transform: rotate(6deg); }
+    .hill-front::before { content: ''; position: absolute; inset: 52px 28px 38px; border: 1px solid #66aaff; background: #172435; border-radius: 8px; }
+    .hill-front::after { content: ''; position: absolute; top: 20px; left: 25px; width: 60px; height: 5px; border-radius: 4px; background: #666670; }
+    .art-note { position: absolute; bottom: 22px; left: 28px; color: #bcbcc2; font-family: inherit; font-size: 13px; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 7% 50px; gap: 32px; }
+    .feature { border-top: 1px solid #333336; padding-top: 20px; }
+    .feature h2 { font-size: 15px; font-weight: 600; }
+    .feature p { font-size: 13px; line-height: 1.8; color: #a1a1a6; }
+    footer { padding: 25px 7%; border-top: 1px solid #333336; color: #a1a1a6; font-size: 12px; display: flex; justify-content: space-between; }
+    @media(max-width: 700px) { main { grid-template-columns: 1fr; padding-top: 40px; gap: 35px; } h1 { font-size: 40px; } nav .links a { display: none; } .art { height: 280px; } .features { grid-template-columns: 1fr; gap: 10px; } }
+  </style>
+</head>
+<body>
+  <nav><a class="brand" href="#">Atelier.</a><div class="links"><a href="#features">工作方式</a><a href="#features">灵感笔记</a><button class="small-button">进入工作室</button></div></nav>
+  <main>
+    <section class="hero-copy">
+      <p class="intro">一个安静的数字工作室</p>
+      <h1>为想法<br>留一点空间。</h1>
+      <p class="description">把零散的灵感，变成有迹可循的创作。<br>从第一张白纸，到下一个让你满意的作品。</p>
+      <div class="actions"><button id="start-button" class="primary">开始我的创作</button><button class="secondary">看看大家的作品 ↗</button></div>
+    </section>
+    <div class="art"><div class="sun"></div><div class="hill-back"></div><div class="hill-front"></div><span class="art-note">A little room to grow.</span></div>
+  </main>
+  <section id="features" class="features">
+    <article class="feature"><h2>收集每一个闪念</h2><p>文字、画面和偶然想到的一句话，<br>都可以成为新的起点。</p></article>
+    <article class="feature"><h2>找到自己的节奏</h2><p>专注在当下的创作，<br>让工具退到想法的后面。</p></article>
+    <article class="feature"><h2>与同频的人相遇</h2><p>分享过程中的小小发现，<br>为彼此的创作留一盏灯。</p></article>
+  </section>
+  <footer><span>© 2026 Atelier Studio</span><span>慢一点，也很好。</span></footer>
+</body>
+</html>

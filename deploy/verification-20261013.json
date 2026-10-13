@@ -1,0 +1,92 @@
+{
+  "verifiedAt": "2026-10-13T20:26:22+08:00",
+  "scope": "Final frozen frontend and backend, local Docker Desktop Linux containers; no public deployment",
+  "releaseStatus": "final-container-verification-passed",
+  "image": {
+    "tag": "miweb:verify",
+    "id": "sha256:83cd602ac63847e71cffaaabbb041b48932dd020093f222a504a433eb36c2a27",
+    "manifest": "sha256:a5a951443c90dd0e824736889f90a4b8773b49de2c042dee400f0070cc526025",
+    "created": "2026-10-13T12:24:58.498501307Z",
+    "platform": "linux/amd64",
+    "user": "node",
+    "uid": 1000
+  },
+  "environment": {
+    "dockerEngine": "29.2.1",
+    "dockerCompose": "5.1.0",
+    "containerOS": "Debian GNU/Linux 12 (bookworm)",
+    "node": "24.21.0",
+    "playwright": "1.64.0",
+    "chromium": "156.0.8078.4",
+    "nginxImage": "sha256:42f2d24ae18df9b5251d1cc45548085656d2335e9338fd150a24e415462d151f"
+  },
+  "composeSmoke": {
+    "command": "node tests/docker-smoke.mjs --build --image=miweb:verify --url=https://example.com",
+    "exitCode": 0,
+    "project": "miweb-smoke-427ae9a8-43a",
+    "configuration": "compose.yaml; generated test key; random 127.0.0.1 port; no host mounts",
+    "passed": [
+      "Production UI and health; LOCAL_ACCESS=0; key required",
+      "Missing/wrong key, cross-origin, filesystem, loopback, private network, and upload traversal rejected",
+      "Chromium demo capture; exact original HTML preserved; minimal source export",
+      "PUBLIC_ORIGIN captured assets resolve from sandbox preview without API key",
+      "React folder upload, source mapping and export; re-import reproduces 180x60 dimensions and translate 4px -8px",
+      "Vue folder upload, source mapping and export; re-import reproduces 180x60 dimensions and translate 4px -8px",
+      "Real public URL https://example.com capture and selector-based layout export",
+      "Linux Chromium process, UID 1000, read-only root filesystem, cap_drop ALL and no OOM"
+    ],
+    "publicURLAssertions": {
+      "url": "https://example.com",
+      "openAPIStatus": 200,
+      "mode": "snapshot",
+      "hasEditableNonzeroWidthNode": true,
+      "exportAPIStatus": 200,
+      "exportSourceFileCount": 0,
+      "exportCSSContains": "translate: 2px -3px"
+    },
+    "completionOutput": "SUCCESS miweb-smoke-427ae9a8-43a; all production-container checks passed using compose.yaml."
+  },
+  "httpsProxy": {
+    "command": "node deploy/check-nginx.mjs --proxy --image=miweb:verify",
+    "environmentOverrides": {
+      "OPENSSL_PATH": "C:\\Program Files\\Git\\usr\\bin\\openssl.exe",
+      "NGINX_IMAGE": "nginx:latest"
+    },
+    "exitCode": 0,
+    "testPrefix": "miweb-nginx-check-80b1c673-a23",
+    "certificate": "Temporary self-signed certificate, explicitly trusted by test client; hostname validated; no certificate validation disabled",
+    "configuration": "Unchanged deploy/nginx.conf, including upstream http://127.0.0.1:4173; app and proxy share only the test network namespace",
+    "passed": [
+      "nginx -t",
+      "HTTPS static UI and health",
+      "Missing API key returns 401; wrong Origin returns 403",
+      "Authenticated Chromium demo capture and minimal source export through HTTPS"
+    ]
+  },
+  "sourceIntegrity": {
+    "comparison": "SHA256 values read inside final image match current host backend, package lockfile and every dist file from the final browser-tested production build",
+    "sha256": {
+      "server/index.mjs": "863ab366a78720c9636cfcfebd12602bb41e9bca5194790872ac2b10ff91be3a",
+      "server/capture.mjs": "79c936970e1af35dbf82befdf994b79c760f5f9a3750cc28d32ff57dd2f0b2f0",
+      "server/project.mjs": "deb1195e7944539412c74a30ef8cf892840ee7ebce610a579b7667bb9e19a80c",
+      "server/project-css.mjs": "d7bdc94b49dc11c09a43dcd79bbaf1b2e398e719e119282e7eac5e1eebeffdd6",
+      "server/source.mjs": "63539d72f2143666da64145e578fba3998e7eed1db8a44764a7550b946444eb2",
+      "server/network.mjs": "a61a76520167e59bf703e6d1f3b1c9bf86dcb5794e03e2191d775714d688f617",
+      "package-lock.json": "6f54cc53a571c76cd3ebf931609ac8a77342fb952333ee4a6c2290c4550011dc",
+      "dist/index.html": "fdf58dc10b2403692ed588adf0545652e7dd6dbf5477751e1708f60305ca259b",
+      "dist/assets/index-CYJSF-7e.css": "01fd2367ad5c3bc2ff41bc15da4a871709fcf15b4487cc2a2a1bf5d7323e76a6",
+      "dist/assets/index-DBs4drTw.js": "ef3dcd32b5bb89dad5631fb9ffe0e0907a95e99ba0128b540ca1870e1876bc4e"
+    }
+  },
+  "cleanup": {
+    "containerFiltersVerifiedEmpty": ["miweb-smoke-", "miweb-nginx-check-", "miweb-final-runtime-info-"],
+    "networkFilterVerifiedEmpty": "miweb-smoke-",
+    "temporaryCertificateDirectoriesAbsent": true,
+    "finalImageRetained": true
+  },
+  "notVerified": [
+    "Actual Ubuntu server host deployment",
+    "Public DNS and publicly issued TLS certificate",
+    "Arbitrary third-party websites or multi-user load capacity"
+  ]
+}

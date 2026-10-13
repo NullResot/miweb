@@ -1,0 +1,42 @@
+name: miweb
+
+services:
+  miweb:
+    image: ${MIWEB_IMAGE:-miweb:local}
+    build:
+      context: .
+    init: true
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "4173"
+      LOCAL_ACCESS: "0"
+      MIWEB_ACCESS_KEY: ${MIWEB_ACCESS_KEY:?Set MIWEB_ACCESS_KEY in deploy/production.env}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN to the HTTPS site origin}
+      SESSION_TTL_MINUTES: ${SESSION_TTL_MINUTES:-120}
+    ports:
+      - "127.0.0.1:${MIWEB_PORT:-4173}:4173"
+    read_only: true
+    tmpfs:
+      - /tmp:size=1g,mode=1777
+    shm_size: 1gb
+    mem_limit: 2g
+    cpus: 2.0
+    pids_limit: 256
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4173/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

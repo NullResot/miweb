@@ -1,0 +1,866 @@
+/* Gallery workspace: quiet desktop panels, with the original mobile layout. */
+.app.editing {
+  --blue: #0071e3;
+  --blue-dark: #0066cc;
+  --muted: #707070;
+  --border: #e6e6e8;
+  --surface: #ffffff;
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+.editing ::selection,
+.modal ::selection {
+  color: #1d1d1f;
+  background: #dcecff;
+}
+
+.editing input,
+.modal input {
+  caret-color: #0071e3;
+}
+
+.editing .app-header,
+.editing .tool-rail,
+.editing .layers-panel,
+.editing .canvas-toolbar,
+.editing .inspector,
+.editing .inspector .panel-heading,
+.editing .status-bar {
+  background: #ffffff;
+  border-color: #e6e6e8;
+}
+
+.editing .app-header {
+  border-bottom-color: #d6d6d6;
+}
+
+.editing .logo,
+.editing .panel-heading h2,
+.editing .selection-info h3,
+.editing .property-title h3,
+.editing .empty-inspector h3 {
+  color: #1d1d1f;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.editing .logo-english,
+.editing .quiet-button,
+.editing .icon-button,
+.editing .header-url,
+.editing .page-icon,
+.editing .page-root,
+.editing .canvas-name,
+.editing .canvas-name > svg,
+.editing .viewport-size,
+.editing .zoom-control,
+.editing .zoom-control select,
+.editing .compare-button,
+.editing .parent-button,
+.editing .property-title,
+.editing .status-bar,
+.editing .status-shortcut button {
+  color: #707070;
+}
+
+.editing .quiet-button,
+.editing .icon-button,
+.editing .compare-button {
+  border-radius: 8px;
+}
+
+.editing .quiet-button:hover:not(:disabled),
+.editing .icon-button:hover:not(:disabled),
+.editing .status-shortcut button:hover:not(:disabled),
+.editing .compare-button:hover:not(:disabled) {
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+.editing .icon-button.active,
+.editing .compare-button.active {
+  color: #0066cc;
+  background: #edf5ff;
+}
+
+.editing .primary-button,
+.modal .primary-button {
+  color: #ffffff;
+  background: #0071e3;
+  border-radius: 999px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.editing .primary-button:hover:not(:disabled),
+.modal .primary-button:hover:not(:disabled) {
+  background: #0066cc;
+}
+
+.editing .secondary-button,
+.modal .secondary-button {
+  color: #1d1d1f;
+  background: #ffffff;
+  border-color: #86868b;
+  border-radius: 999px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.editing .secondary-button:hover:not(:disabled),
+.modal .secondary-button:hover:not(:disabled) {
+  background: #f5f5f7;
+}
+
+.editing .primary-button:disabled,
+.editing .secondary-button:disabled,
+.modal .primary-button:disabled,
+.modal .secondary-button:disabled {
+  color: #707070;
+  background: #f5f5f7;
+  border-color: #e6e6e8;
+  opacity: 1;
+}
+
+.editing .header-url,
+.editing .layer-search {
+  border-color: #d6d6d6;
+  border-radius: 10px;
+  background: #fafafc;
+  box-shadow: none;
+}
+
+.editing .header-url input,
+.editing .layer-search input {
+  background: transparent;
+  color: #1d1d1f;
+}
+
+.editing input::placeholder,
+.modal input::placeholder {
+  color: #707070;
+  opacity: 1;
+}
+
+.editing .header-url button {
+  border-color: #d6d6d6;
+  border-radius: 0 9px 9px 0;
+  color: #1d1d1f;
+}
+
+.editing .header-url button:hover:not(:disabled) {
+  background: #e6e6e8;
+}
+
+.editing .header-url:focus-within,
+.editing .layer-search:focus-within,
+.editing .number-field:focus-within {
+  border-color: #0071e3;
+  background: #ffffff;
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.editing .header-url input:focus-visible,
+.editing .layer-search input:focus-visible,
+.editing .number-field input:focus-visible {
+  outline: none;
+}
+
+.editing .layer-list,
+.editing .inspector,
+.editing .canvas-scroll,
+.modal,
+.code-preview {
+  scrollbar-color: #c7c7cc transparent;
+}
+
+.editing .layer-row {
+  color: #1d1d1f;
+  border-left-width: 1px;
+}
+
+.editing .layer-row:hover {
+  background: #fafafc;
+}
+
+.editing .layer-row.selected {
+  color: #1d1d1f;
+  background: #f5f5f7;
+  border-left-color: #0071e3;
+}
+
+.editing .layer-row.selected .node-tag,
+.editing .more-layers,
+.editing .parent-button:hover {
+  color: #0066cc;
+}
+
+.editing .layer-label small,
+.editing .page-root > span:last-child,
+.editing .layer-footer,
+.editing .layer-empty,
+.editing .layer-empty span,
+.editing .viewport-size small,
+.editing .preview-caption,
+.editing .selection-info > code,
+.editing .number-field > span,
+.editing .number-field small,
+.editing .nudge-controls small,
+.editing .property-hint,
+.editing .source-info,
+.editing .source-info code,
+.editing .empty-inspector > p,
+.editing .empty-tip span:not(.arrow-key),
+.editing .status-save {
+  color: #707070;
+}
+
+.editing .mode-badge,
+.editing .mode-badge.source,
+.editing .element-tag {
+  background: #f5f5f7;
+  border-color: #d6d6d6;
+  color: #707070;
+  border-radius: 5px;
+}
+
+.editing .viewport-size {
+  border-color: #d6d6d6;
+}
+
+.editing .canvas,
+.editing .ruler {
+  background-color: #f5f5f7;
+  background-image: none;
+}
+
+.editing .ruler {
+  color: #707070;
+}
+
+.editing .ruler.horizontal {
+  border-bottom: 1px solid #e6e6e8;
+}
+
+.editing .ruler.vertical {
+  border-right: 1px solid #e6e6e8;
+}
+
+.editing .ruler.horizontal > span {
+  border-left: 1px solid #d6d6d6;
+}
+
+.editing .ruler.vertical > span {
+  border-top: 1px solid #d6d6d6;
+}
+
+.editing .frame-wrapper {
+  outline: 1px solid #d6d6d6;
+  box-shadow: none;
+}
+
+.editing .caption-dot,
+.editing .floating-toolbar > span {
+  background: #d6d6d6;
+}
+
+.editing .floating-toolbar {
+  background: #ffffff;
+  border-color: #d6d6d6;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.editing .compare-note {
+  color: #1d1d1f;
+  background: #ffffff;
+  border-color: #d6d6d6;
+}
+
+.editing .frame-loading {
+  color: #707070;
+  background: #ffffff;
+}
+
+.editing .number-field {
+  background: #fafafc;
+  border-color: #d6d6d6;
+  border-radius: 8px;
+  color: #707070;
+}
+
+.editing .number-field input {
+  color: #1d1d1f;
+  font-variant-numeric: tabular-nums;
+}
+
+.editing .nudge-controls .icon-button {
+  border-color: #d6d6d6;
+  border-radius: 6px;
+  color: #1d1d1f;
+}
+
+.editing .source-info {
+  background: #f5f5f7;
+  border-radius: 10px;
+}
+
+.editing .source-info strong,
+.editing .empty-tip strong {
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.editing .inspector-bottom > span {
+  color: #237a45;
+}
+
+.editing .selection-illustration {
+  border-color: #0071e3;
+  background: #ffffff;
+  color: #0071e3;
+}
+
+.editing .selection-illustration i {
+  border-color: #0071e3;
+}
+
+.editing .empty-tip > svg,
+.editing .arrow-key {
+  color: #707070;
+}
+
+.editing .arrow-key,
+.editing kbd,
+.modal kbd {
+  background: #fafafc;
+  color: #707070;
+  border-color: #d6d6d6;
+  border-bottom-width: 1px;
+}
+
+.editing .status-dot {
+  background: #237a45;
+}
+
+/* Shared sheets also appear over the landing page. */
+.modal-shade,
+.loading-shade {
+  background: rgb(29 29 31 / 22%);
+  backdrop-filter: blur(8px);
+}
+
+.modal,
+.loading-card {
+  --blue: #0071e3;
+  --blue-dark: #0066cc;
+  color: #1d1d1f;
+  background: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 28px;
+  box-shadow: none;
+}
+
+.modal-heading h2,
+.loading-card h2 {
+  color: #1d1d1f;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.modal-heading h2 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.modal-heading p,
+.help-steps p,
+.modal-note,
+.folder-drop p,
+.folder-drop small,
+.or-divider,
+.loading-card p,
+.loading-card small {
+  color: #707070;
+}
+
+.modal-heading p,
+.help-steps p,
+.folder-drop p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.modal-note,
+.folder-drop small,
+.or-divider {
+  font-size: 11px;
+}
+
+.modal .icon-button {
+  color: #707070;
+  border-radius: 999px;
+}
+
+.modal .icon-button:hover:not(:disabled) {
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+.help-steps > div,
+.help-steps svg {
+  color: #707070;
+}
+
+.help-steps strong,
+.folder-drop strong {
+  color: #1d1d1f;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.shortcuts {
+  background: #f5f5f7;
+  border-color: #e6e6e8;
+  border-radius: 14px;
+}
+
+.shortcuts > div {
+  color: #707070;
+  font-size: 12px;
+}
+
+.folder-drop {
+  background: #fafafc;
+  border-color: #86868b;
+  border-radius: 18px;
+}
+
+.folder-drop:hover {
+  background: #f5f5f7;
+  border-color: #0071e3;
+}
+
+.folder-drop > span {
+  color: #0071e3;
+}
+
+.or-divider > span {
+  background: #d6d6d6;
+}
+
+.path-form input,
+.key-form input {
+  color: #1d1d1f;
+  border-color: #86868b;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 13px;
+}
+
+.path-form input:focus,
+.key-form input:focus {
+  border-color: #0071e3;
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
+}
+
+.export-tabs {
+  border-color: #d6d6d6;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.export-tabs button {
+  color: #707070;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.export-tabs button.active {
+  color: #0066cc;
+  border-bottom-color: #0071e3;
+}
+
+.export-tabs button > span {
+  color: #707070;
+  background: #f5f5f7;
+  border-radius: 5px;
+}
+
+.export-file {
+  color: #707070;
+  background: #f5f5f7;
+  border-color: #e6e6e8;
+}
+
+.export-file select {
+  color: #1d1d1f;
+  font-size: 11px;
+}
+
+.export-file > span,
+.export-footer > span {
+  color: #707070;
+  font-size: 11px;
+}
+
+.code-preview {
+  color: #1d1d1f;
+  background: #fafafc;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.line-number {
+  color: #707070;
+  font-size: 10px;
+}
+
+.code-line.added {
+  color: #216e39;
+  background: #edf7ef;
+}
+
+.code-line.removed {
+  color: #a52b24;
+  background: #fff0ee;
+}
+
+.code-line.context {
+  color: #707070;
+  background: #f5f5f7;
+}
+
+.export-footer {
+  border-color: #d6d6d6;
+  background: #ffffff;
+}
+
+.export-footer > span > svg,
+.toast svg {
+  color: #237a45;
+}
+
+.export-footer button {
+  font-size: 12px;
+}
+
+.export-warning,
+.warning-banner {
+  color: #805600;
+  background: #fff6e5;
+  border-color: #e8d8b9;
+}
+
+.error-banner {
+  color: #a52b24;
+  background: #fff0ee;
+  border-color: #e8c9c5;
+}
+
+.error-banner button {
+  color: #a52b24;
+}
+
+.error-banner,
+.warning-banner,
+.toast {
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.toast {
+  color: #1d1d1f;
+  background: #ffffff;
+  border-color: #d6d6d6;
+  font-size: 13px;
+}
+
+.loading-logo {
+  background: #f5f5f7;
+  color: #0071e3;
+  border-radius: 18px;
+}
+
+.loading-card h2 {
+  font-size: 22px;
+}
+
+.loading-card p {
+  font-size: 13px;
+}
+
+.loading-card small {
+  font-size: 11px;
+}
+
+.loading-line {
+  background: #e6e6e8;
+}
+
+.loading-line::after {
+  background: #0071e3;
+}
+
+/* A desktop tool surface, with the imported page left entirely untouched. */
+@media (min-width: 601px) {
+  .editing .app-header {
+    height: 68px;
+    padding: 0 24px;
+    gap: 24px;
+    border-bottom-color: #e6e6e8;
+  }
+
+  .editing .header-url {
+    height: 40px;
+    padding-left: 16px;
+    border-radius: 999px;
+    background: #f5f5f7;
+    border-color: #e6e6e8;
+  }
+
+  .editing .header-url input {
+    font-size: 13px;
+    letter-spacing: -0.01em;
+  }
+
+  .editing .header-url button {
+    padding-inline: 16px;
+    font-size: 12px;
+    border-radius: 0 999px 999px 0;
+    border-left-color: #d6d6d6;
+  }
+
+  .editing .copy-button {
+    height: 36px;
+    padding-inline: 16px;
+    font-size: 12px;
+  }
+
+  .editing .workspace {
+    padding: 10px;
+    gap: 10px;
+    background: #f5f5f7;
+  }
+
+  .editing .tool-rail,
+  .editing .layers-panel,
+  .editing .inspector,
+  .editing .editor-center {
+    border: 1px solid #d6d6d6;
+    border-radius: 18px;
+    background: #ffffff;
+  }
+
+  .editing .tool-rail {
+    padding-block: 14px;
+  }
+
+  .editing .layers-panel {
+    overflow: hidden;
+  }
+
+  .editing .editor-center {
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .editing .panel-heading {
+    height: 56px;
+  }
+
+  .editing .panel-heading h2 {
+    font-size: 14px;
+  }
+
+  .editing .layer-search {
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .editing .layer-row {
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .editing .layer-label small,
+  .editing .layer-footer {
+    font-size: 11px;
+  }
+
+  .editing .canvas-toolbar {
+    height: 56px;
+  }
+
+  .editing .canvas-name,
+  .editing .zoom-control select,
+  .editing .compare-button {
+    font-size: 12px;
+  }
+
+  .editing .viewport-controls {
+    padding: 3px;
+    border: 1px solid #e6e6e8;
+    border-radius: 12px;
+    background: #fafafc;
+  }
+
+  .editing .viewport-controls .icon-button {
+    width: 30px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .editing .viewport-size {
+    padding-right: 7px;
+  }
+
+  .editing .canvas,
+  .editing .ruler {
+    background-color: #fafafc;
+  }
+
+  .editing .preview-caption {
+    font-size: 11px;
+  }
+
+  .editing .preview-caption > span:last-child {
+    font-size: 10px;
+  }
+
+  .editing .floating-toolbar {
+    bottom: 16px;
+    padding: 5px 8px;
+    border-radius: 999px;
+  }
+
+  .editing .compare-button {
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+
+  .editing .selection-info h3 {
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .editing .selection-info > code,
+  .editing .parent-button {
+    font-size: 11px;
+  }
+
+  .editing .property-title h3 {
+    font-size: 13px;
+  }
+
+  .editing .number-field {
+    height: 36px;
+    border-radius: 9px;
+  }
+
+  .editing .number-field > span {
+    font-size: 11px;
+  }
+
+  .editing .number-field input {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .editing .number-field small {
+    font-size: 10px;
+  }
+
+  .editing .property-hint,
+  .editing .source-info code,
+  .editing .source-info p {
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .editing .source-info strong {
+    font-size: 12px;
+  }
+
+  .editing .status-bar {
+    height: 34px;
+    padding-inline: 20px;
+    background: #f5f5f7;
+    border-top: 0;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 600px) {
+  .editing .workspace {
+    padding: 0;
+    gap: 0;
+  }
+
+  .editing .editor-center {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .editing .inspector {
+    border: 0;
+    border-top: 1px solid #e6e6e8;
+    border-radius: 0;
+  }
+
+  .editing .header-url {
+    border-radius: 8px;
+  }
+
+  .editing .header-url button {
+    border-radius: 0 7px 7px 0;
+  }
+
+  .editing .number-field,
+  .editing .source-info {
+    border-radius: 6px;
+  }
+
+  .editing .floating-toolbar {
+    bottom: 8px;
+    border-radius: 12px;
+  }
+
+  .editing .canvas-scroll {
+    bottom: 54px;
+    padding-bottom: 18px;
+  }
+
+  .modal,
+  .loading-card {
+    border-radius: 18px;
+  }
+
+  .modal-heading h2,
+  .loading-card h2 {
+    font-size: 20px;
+  }
+
+  .modal-heading p,
+  .help-steps p,
+  .folder-drop p,
+  .loading-card p {
+    font-size: 12px;
+  }
+
+  .folder-drop,
+  .shortcuts {
+    border-radius: 12px;
+  }
+
+  .export-file > span,
+  .export-footer > span,
+  .toast {
+    font-size: 11px;
+  }
+}

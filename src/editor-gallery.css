@@ -1,0 +1,896 @@
+/* Dark gallery workspace: restrained controls around an unchanged page preview. */
+.app.editing {
+  --blue: #0071e3;
+  --blue-dark: #0066cc;
+  --muted: #a1a1a6;
+  --border: #333336;
+  --surface: #161618;
+  color: #f5f5f7;
+  background: #080809;
+}
+
+.editing ::selection,
+.modal ::selection {
+  color: #f5f5f7;
+  background: #284465;
+}
+
+.editing input,
+.modal input {
+  caret-color: #66aaff;
+}
+
+.editing input,
+.editing select,
+.modal input,
+.modal select {
+  color-scheme: dark;
+}
+
+.editing select option,
+.modal select option {
+  color: #f5f5f7;
+  background: #252527;
+}
+
+.editing .app-header,
+.editing .tool-rail,
+.editing .layers-panel,
+.editing .canvas-toolbar,
+.editing .inspector,
+.editing .inspector .panel-heading,
+.editing .status-bar {
+  background: #161618;
+  border-color: #333336;
+}
+
+.editing .app-header {
+  border-bottom-color: #333336;
+}
+
+.editing .logo,
+.editing .panel-heading h2,
+.editing .selection-info h3,
+.editing .property-title h3,
+.editing .empty-inspector h3 {
+  color: #f5f5f7;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.editing .logo-english,
+.editing .quiet-button,
+.editing .icon-button,
+.editing .header-url,
+.editing .page-icon,
+.editing .page-root,
+.editing .canvas-name,
+.editing .canvas-name > svg,
+.editing .viewport-size,
+.editing .zoom-control,
+.editing .zoom-control select,
+.editing .compare-button,
+.editing .parent-button,
+.editing .property-title,
+.editing .status-bar,
+.editing .status-shortcut button {
+  color: #a1a1a6;
+}
+
+.editing .quiet-button,
+.editing .icon-button,
+.editing .compare-button {
+  border-radius: 8px;
+}
+
+.editing .quiet-button:hover:not(:disabled),
+.editing .icon-button:hover:not(:disabled),
+.editing .status-shortcut button:hover:not(:disabled),
+.editing .compare-button:hover:not(:disabled) {
+  color: #f5f5f7;
+  background: #1d1d1f;
+}
+
+.editing .icon-button.active,
+.editing .compare-button.active {
+  color: #66aaff;
+  background: #14293c;
+}
+
+.editing .primary-button,
+.modal .primary-button {
+  color: #ffffff;
+  background: #0071e3;
+  border-radius: 999px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.editing .primary-button:hover:not(:disabled),
+.modal .primary-button:hover:not(:disabled) {
+  background: #0066cc;
+}
+
+.editing .secondary-button,
+.modal .secondary-button {
+  color: #f5f5f7;
+  background: #161618;
+  border-color: #48484c;
+  border-radius: 999px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.editing .secondary-button:hover:not(:disabled),
+.modal .secondary-button:hover:not(:disabled) {
+  background: #1d1d1f;
+}
+
+.editing button:disabled,
+.modal button:disabled {
+  color: #8d8d93;
+  opacity: 1;
+}
+
+.editing .icon-button:disabled,
+.modal .icon-button:disabled {
+  color: #8d8d93;
+  background: transparent;
+}
+
+.editing .primary-button:disabled,
+.editing .secondary-button:disabled,
+.modal .primary-button:disabled,
+.modal .secondary-button:disabled {
+  color: #a1a1a6;
+  background: #1d1d1f;
+  border-color: #333336;
+  opacity: 1;
+}
+
+.editing .header-url,
+.editing .layer-search {
+  border-color: #333336;
+  border-radius: 10px;
+  background: #252527;
+  box-shadow: none;
+}
+
+.editing .header-url input,
+.editing .layer-search input {
+  background: transparent;
+  color: #f5f5f7;
+}
+
+.editing input::placeholder,
+.modal input::placeholder {
+  color: #a1a1a6;
+  opacity: 1;
+}
+
+.editing .header-url button {
+  border-color: #333336;
+  border-radius: 0 9px 9px 0;
+  color: #f5f5f7;
+}
+
+.editing .header-url button:hover:not(:disabled) {
+  background: #333336;
+}
+
+.editing .header-url:focus-within,
+.editing .layer-search:focus-within,
+.editing .number-field:focus-within {
+  border-color: #66aaff;
+  background: #252527;
+  outline: 2px solid #66aaff;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.editing .header-url input:focus-visible,
+.editing .layer-search input:focus-visible,
+.editing .number-field input:focus-visible {
+  outline: none;
+}
+
+.editing .layer-list,
+.editing .inspector,
+.editing .canvas-scroll,
+.modal,
+.code-preview {
+  scrollbar-color: #55555a transparent;
+}
+
+.editing .layer-row {
+  color: #f5f5f7;
+  border-left-width: 1px;
+}
+
+.editing .layer-row:hover {
+  background: #1d1d1f;
+}
+
+.editing .layer-row.selected {
+  color: #f5f5f7;
+  background: #252527;
+  border-left-color: #66aaff;
+}
+
+.editing .layer-row.selected .node-tag,
+.editing .more-layers,
+.editing .parent-button:hover {
+  color: #66aaff;
+}
+
+.editing .layer-label small,
+.editing .page-root > span:last-child,
+.editing .layer-footer,
+.editing .layer-empty,
+.editing .layer-empty span,
+.editing .viewport-size small,
+.editing .preview-caption,
+.editing .selection-info > code,
+.editing .number-field > span,
+.editing .number-field small,
+.editing .nudge-controls small,
+.editing .property-hint,
+.editing .source-info,
+.editing .source-info code,
+.editing .empty-inspector > p,
+.editing .empty-tip span:not(.arrow-key),
+.editing .status-save {
+  color: #a1a1a6;
+}
+
+.editing .mode-badge,
+.editing .mode-badge.source,
+.editing .element-tag {
+  background: #1d1d1f;
+  border-color: #333336;
+  color: #a1a1a6;
+  border-radius: 5px;
+}
+
+.editing .viewport-size {
+  border-color: #333336;
+}
+
+.editing .canvas,
+.editing .ruler {
+  background-color: #0d0d0f;
+  background-image: none;
+}
+
+.editing .ruler {
+  color: #a1a1a6;
+}
+
+.editing .ruler.horizontal {
+  border-bottom: 1px solid #333336;
+}
+
+.editing .ruler.vertical {
+  border-right: 1px solid #333336;
+}
+
+.editing .ruler.horizontal > span {
+  border-left: 1px solid #333336;
+}
+
+.editing .ruler.vertical > span {
+  border-top: 1px solid #333336;
+}
+
+.editing .frame-wrapper {
+  outline: 1px solid #333336;
+  box-shadow: none;
+}
+
+.editing .caption-dot,
+.editing .floating-toolbar > span {
+  background: #333336;
+}
+
+.editing .floating-toolbar {
+  background: #1d1d1f;
+  border-color: #333336;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.editing .compare-note {
+  color: #f5f5f7;
+  background: #161618;
+  border-color: #333336;
+}
+
+.editing .frame-loading {
+  color: #a1a1a6;
+  background: #161618;
+}
+
+.editing .number-field {
+  background: #252527;
+  border-color: #333336;
+  border-radius: 8px;
+  color: #a1a1a6;
+}
+
+.editing .number-field input {
+  color: #f5f5f7;
+  font-variant-numeric: tabular-nums;
+}
+
+.editing .nudge-controls .icon-button {
+  border-color: #333336;
+  border-radius: 6px;
+  color: #f5f5f7;
+}
+
+.editing .source-info {
+  background: #1d1d1f;
+  border-radius: 10px;
+}
+
+.editing .source-info strong,
+.editing .empty-tip strong {
+  color: #f5f5f7;
+  font-weight: 500;
+}
+
+.editing .inspector-bottom > span {
+  color: #80c997;
+}
+
+.editing .selection-illustration {
+  border-color: #66aaff;
+  background: #161618;
+  color: #66aaff;
+}
+
+.editing .selection-illustration i {
+  border-color: #66aaff;
+  background: #161618;
+}
+
+.editing .empty-tip > svg,
+.editing .arrow-key {
+  color: #a1a1a6;
+}
+
+.editing .arrow-key,
+.editing kbd,
+.modal kbd {
+  background: #252527;
+  color: #a1a1a6;
+  border-color: #333336;
+  border-bottom-width: 1px;
+}
+
+.editing .status-dot {
+  background: #80c997;
+}
+
+/* Shared sheets also appear over the landing page. */
+.modal-shade,
+.loading-shade {
+  background: rgb(0 0 0 / 64%);
+  backdrop-filter: blur(8px);
+}
+
+.modal,
+.loading-card {
+  --blue: #0071e3;
+  --blue-dark: #0066cc;
+  --muted: #a1a1a6;
+  --border: #333336;
+  --surface: #1d1d1f;
+  color-scheme: dark;
+  color: #f5f5f7;
+  background: #1d1d1f;
+  border: 1px solid #333336;
+  border-radius: 28px;
+  box-shadow: none;
+}
+
+.modal-heading h2,
+.loading-card h2 {
+  color: #f5f5f7;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.modal-heading h2 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.modal-heading p,
+.help-steps p,
+.modal-note,
+.folder-drop p,
+.folder-drop small,
+.or-divider,
+.loading-card p,
+.loading-card small {
+  color: #a1a1a6;
+}
+
+.modal-heading p,
+.help-steps p,
+.folder-drop p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.modal-note,
+.folder-drop small,
+.or-divider {
+  font-size: 11px;
+}
+
+.modal .icon-button {
+  color: #a1a1a6;
+  border-radius: 999px;
+}
+
+.modal .icon-button:hover:not(:disabled) {
+  color: #f5f5f7;
+  background: #1d1d1f;
+}
+
+.help-steps > div,
+.help-steps svg {
+  color: #a1a1a6;
+}
+
+.help-steps strong,
+.folder-drop strong {
+  color: #f5f5f7;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.shortcuts {
+  background: #1d1d1f;
+  border-color: #333336;
+  border-radius: 14px;
+}
+
+.shortcuts > div {
+  color: #a1a1a6;
+  font-size: 12px;
+}
+
+.folder-drop {
+  background: #252527;
+  border-color: #48484c;
+  border-radius: 18px;
+}
+
+.folder-drop:hover {
+  background: #1d1d1f;
+  border-color: #66aaff;
+}
+
+.folder-drop > span {
+  color: #66aaff;
+}
+
+.or-divider > span {
+  background: #333336;
+}
+
+.path-form input,
+.key-form input {
+  color: #f5f5f7;
+  border-color: #48484c;
+  border-radius: 10px;
+  background: #252527;
+  font-size: 13px;
+}
+
+.path-form input:focus,
+.key-form input:focus {
+  border-color: #66aaff;
+  outline: 2px solid #66aaff;
+  outline-offset: 2px;
+}
+
+.export-tabs {
+  border-color: #333336;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.export-tabs button {
+  color: #a1a1a6;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.export-tabs button.active {
+  color: #66aaff;
+  border-bottom-color: #66aaff;
+}
+
+.export-tabs button > span {
+  color: #a1a1a6;
+  background: #1d1d1f;
+  border-radius: 5px;
+}
+
+.export-file {
+  color: #a1a1a6;
+  background: #1d1d1f;
+  border-color: #333336;
+}
+
+.export-file select {
+  color: #f5f5f7;
+  font-size: 11px;
+}
+
+.export-file > span,
+.export-footer > span {
+  color: #a1a1a6;
+  font-size: 11px;
+}
+
+.code-preview {
+  color: #f5f5f7;
+  background: #111113;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.line-number {
+  color: #a1a1a6;
+  font-size: 10px;
+}
+
+.code-line.added {
+  color: #a8d5b5;
+  background: #17291f;
+}
+
+.code-line.removed {
+  color: #ffaba2;
+  background: #321e1f;
+}
+
+.code-line.context {
+  color: #a1a1a6;
+  background: #1d1d1f;
+}
+
+.export-footer {
+  border-color: #333336;
+  background: #1d1d1f;
+}
+
+.export-footer > span > svg,
+.toast svg {
+  color: #80c997;
+}
+
+.export-footer button {
+  font-size: 12px;
+}
+
+.export-warning,
+.warning-banner {
+  color: #e6c68a;
+  background: #2a2418;
+  border-color: #584a31;
+}
+
+.error-banner {
+  color: #ffaba2;
+  background: #321e1f;
+  border-color: #603538;
+}
+
+.error-banner button {
+  color: #ffaba2;
+}
+
+.error-banner,
+.warning-banner,
+.toast {
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.toast {
+  color: #f5f5f7;
+  background: #1d1d1f;
+  border-color: #333336;
+  font-size: 13px;
+}
+
+.loading-logo {
+  background: #1d1d1f;
+  color: #66aaff;
+  border-radius: 18px;
+}
+
+.loading-card h2 {
+  font-size: 22px;
+}
+
+.loading-card p {
+  font-size: 13px;
+}
+
+.loading-card small {
+  font-size: 11px;
+}
+
+.loading-line {
+  background: #333336;
+}
+
+.loading-line::after {
+  background: #66aaff;
+}
+
+/* A desktop tool surface, with the imported page left entirely untouched. */
+@media (min-width: 601px) {
+  .editing .app-header {
+    height: 68px;
+    padding: 0 24px;
+    gap: 24px;
+    border-bottom-color: #333336;
+  }
+
+  .editing .header-url {
+    height: 40px;
+    padding-left: 16px;
+    border-radius: 999px;
+    background: #252527;
+    border-color: #333336;
+  }
+
+  .editing .header-url input {
+    font-size: 13px;
+    letter-spacing: -0.01em;
+  }
+
+  .editing .header-url button {
+    padding-inline: 16px;
+    font-size: 12px;
+    border-radius: 0 999px 999px 0;
+    border-left-color: #333336;
+  }
+
+  .editing .copy-button {
+    height: 36px;
+    padding-inline: 16px;
+    font-size: 12px;
+  }
+
+  .editing .workspace {
+    padding: 10px;
+    gap: 10px;
+    background: #080809;
+  }
+
+  .editing .tool-rail,
+  .editing .layers-panel,
+  .editing .inspector,
+  .editing .editor-center {
+    border: 1px solid #333336;
+    border-radius: 18px;
+    background: #161618;
+  }
+
+  .editing .tool-rail {
+    padding-block: 14px;
+  }
+
+  .editing .layers-panel {
+    overflow: hidden;
+  }
+
+  .editing .editor-center {
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .editing .panel-heading {
+    height: 56px;
+  }
+
+  .editing .panel-heading h2 {
+    font-size: 14px;
+  }
+
+  .editing .layer-search {
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .editing .layer-row {
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .editing .layer-label small,
+  .editing .layer-footer {
+    font-size: 11px;
+  }
+
+  .editing .canvas-toolbar {
+    height: 56px;
+  }
+
+  .editing .canvas-name,
+  .editing .zoom-control select,
+  .editing .compare-button {
+    font-size: 12px;
+  }
+
+  .editing .viewport-controls {
+    padding: 3px;
+    border: 1px solid #333336;
+    border-radius: 12px;
+    background: #252527;
+  }
+
+  .editing .viewport-controls .icon-button {
+    width: 30px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .editing .viewport-size {
+    padding-right: 7px;
+  }
+
+  .editing .canvas,
+  .editing .ruler {
+    background-color: #0d0d0f;
+  }
+
+  .editing .preview-caption {
+    font-size: 11px;
+  }
+
+  .editing .preview-caption > span:last-child {
+    font-size: 10px;
+  }
+
+  .editing .floating-toolbar {
+    bottom: 16px;
+    padding: 5px 8px;
+    border-radius: 999px;
+  }
+
+  .editing .compare-button {
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+
+  .editing .selection-info h3 {
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .editing .selection-info > code,
+  .editing .parent-button {
+    font-size: 11px;
+  }
+
+  .editing .property-title h3 {
+    font-size: 13px;
+  }
+
+  .editing .number-field {
+    height: 36px;
+    border-radius: 9px;
+  }
+
+  .editing .number-field > span {
+    font-size: 11px;
+  }
+
+  .editing .number-field input {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .editing .number-field small {
+    font-size: 10px;
+  }
+
+  .editing .property-hint,
+  .editing .source-info code,
+  .editing .source-info p {
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .editing .source-info strong {
+    font-size: 12px;
+  }
+
+  .editing .status-bar {
+    height: 34px;
+    padding-inline: 20px;
+    background: #080809;
+    border-top: 0;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 600px) {
+  .editing .workspace {
+    padding: 0;
+    gap: 0;
+  }
+
+  .editing .editor-center {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .editing .inspector {
+    border: 0;
+    border-top: 1px solid #333336;
+    border-radius: 0;
+  }
+
+  .editing .header-url {
+    border-radius: 8px;
+  }
+
+  .editing .header-url button {
+    border-radius: 0 7px 7px 0;
+  }
+
+  .editing .number-field,
+  .editing .source-info {
+    border-radius: 6px;
+  }
+
+  .editing .floating-toolbar {
+    bottom: 8px;
+    border-radius: 12px;
+  }
+
+  .editing .canvas-scroll {
+    bottom: 54px;
+    padding-bottom: 18px;
+  }
+
+  .modal,
+  .loading-card {
+    border-radius: 18px;
+  }
+
+  .modal-heading h2,
+  .loading-card h2 {
+    font-size: 20px;
+  }
+
+  .modal-heading p,
+  .help-steps p,
+  .folder-drop p,
+  .loading-card p {
+    font-size: 12px;
+  }
+
+  .folder-drop,
+  .shortcuts {
+    border-radius: 12px;
+  }
+
+  .export-file > span,
+  .export-footer > span,
+  .toast {
+    font-size: 11px;
+  }
+}

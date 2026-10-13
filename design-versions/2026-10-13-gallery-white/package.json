@@ -1,0 +1,39 @@
+{
+  "name": "miweb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.mjs",
+    "build": "tsc -b && vite build",
+    "start": "node server/index.mjs --production",
+    "test": "node --test tests/*.test.mjs",
+    "test:integration": "node --test tests/integration/*.test.mjs",
+    "test:e2e": "playwright test",
+    "browser:install": "playwright install chromium"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.28.4",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/compiler-dom": "^3.5.22",
+    "@vue/compiler-sfc": "^3.5.22",
+    "diff": "^8.0.2",
+    "express": "^5.1.0",
+    "ipaddr.js": "^2.2.0",
+    "lucide-react": "^0.468.0",
+    "parse5": "^7.3.0",
+    "playwright": "^1.56.0",
+    "postcss": "^8.5.30",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vite": "^7.1.9",
+    "vue": "^3.5.22",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\api.ts",
+    "Hash": "EDD63E5C63D9BE6334AF30A9696B07C1ABA63E8315FA697E02547057CDD0B8BC"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\App.tsx",
+    "Hash": "2C30609EA7FF5451CA6E1DEA44A8EB3F14F1803DFE7E7358C36384060636F47A"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\bridge.js",
+    "Hash": "40C15FC216FE2D75CF0A9B58D7CB71025B48D49E4E7FEF4BE74A2781E6582F14"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\editor-gallery.css",
+    "Hash": "2C9D66675282B2B26B7E471004DD051A84BD5A5ACA0AE21FA6181C73258D2792"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\gallery.css",
+    "Hash": "399FCC1A486B803EC634D35E48423AE2EC222F2E7E2A2D292558C903E68169FC"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\Landing.tsx",
+    "Hash": "E9CFD6B160B91086094D0985D11E4BF7A8C92EFAE684D8B4955385EBA6FDD263"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\main.tsx",
+    "Hash": "815DD7BA0B0E695DE49AC2DB550E618220581982E8C0D018B2C5A6C8DB47BDF9"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\scroll-showcase.css",
+    "Hash": "276D1F680628565B76CFDD7182FFE44A10C9E445890672ABD1D3AC62CE34771D"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\ScrollShowcase.tsx",
+    "Hash": "BDD7EFE61304E2C1C78D72E19D21C3BA2403ADCE7407287A009448C618DB8F53"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\styles.css",
+    "Hash": "CF08CB80E96E63199846D310D5B121429C949CCE027F9D68FBF10DDDBA923191"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\types.ts",
+    "Hash": "DD16D015DB18181D963261DAB20099B78BA35FFF6AE1C990A972889164FDE95B"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\useHistory.ts",
+    "Hash": "8ACFFAE4ECA2F54F8793B06FB3869228AE818BAB73B8E821FBC0E990510FC36C"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-gallery-white\\src\\vite-env.d.ts",
+    "Hash": "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\api.ts",
+    "Hash": "EDD63E5C63D9BE6334AF30A9696B07C1ABA63E8315FA697E02547057CDD0B8BC"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\App.tsx",
+    "Hash": "E96FAC48F1D014C7F20C900EA43694C8FBCBA2D0C69D8E31ECC835F02D64230F"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\bridge.js",
+    "Hash": "40C15FC216FE2D75CF0A9B58D7CB71025B48D49E4E7FEF4BE74A2781E6582F14"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\main.tsx",
+    "Hash": "F592547EC595974C25CC12D62D93A5331D4D4D0D2555AC361470A376468B2E4F"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\styles.css",
+    "Hash": "8BA4E16105744D45B8E585FF56AEC8FB33E43176CA50178B055087DA233C86E5"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\types.ts",
+    "Hash": "DD16D015DB18181D963261DAB20099B78BA35FFF6AE1C990A972889164FDE95B"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\useHistory.ts",
+    "Hash": "8ACFFAE4ECA2F54F8793B06FB3869228AE818BAB73B8E821FBC0E990510FC36C"
+  },
+  {
+    "Path": "D:\\miweb\\design-versions\\2026-10-13-original\\src\\vite-env.d.ts",
+    "Hash": "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+  }
+]
