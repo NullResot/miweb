@@ -137,7 +137,7 @@ try {
     response.end('<!doctype html><title>Desktop URL fixture</title><button id="desktop-url" style="margin:50px;width:160px;height:50px">URL page</button>');
   });
   await new Promise((resolve) => fixtureServer.listen(0, "127.0.0.1", resolve));
-  await page.getByRole("textbox", { name: "网站链接或本地项目地址" }).fill(`http://127.0.0.1:${fixtureServer.address().port}`);
+  await page.getByRole("textbox", { name: "网站链接或本地项目地址" }).fill(`127.0.0.1:${fixtureServer.address().port}`);
   await page.getByRole("button", { name: "打开页面", exact: true }).click();
   await page.locator(".page-root strong").filter({ hasText: "Desktop URL fixture" }).waitFor({ timeout: 30000 });
   await clickPreview(page, "#desktop-url");

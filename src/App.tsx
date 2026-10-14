@@ -630,7 +630,7 @@ export default function App() {
       return;
     }
     let input = value.trim();
-    if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(input))
+    if (/^(localhost|(?:\d{1,3}\.){3}\d{1,3}|\[[0-9a-fA-F:]+\])(:\d+)?(\/|$)/.test(input))
       input = `http://${input}`;
     else if (
       !/^https?:\/\//i.test(input) &&

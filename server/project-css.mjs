@@ -33,6 +33,14 @@ async function localCss(target, filename, roots) {
   return resolved;
 }
 export async function safeProjectCss(code, filename, roots, stack=[], budget={count:0,bytes:0,deadline:Date.now()+20000}, options={}) {
+  // Compare real filesystem paths on both sides of the containment check.
+  // Windows temporary directories can use 8.3 names or different casing, and
+  // a selected project itself can be a directory junction. Child symlinks still
+  // have to resolve inside these canonical roots before any file is read.
+  if(!stack.length) {
+    roots=await Promise.all(roots.map(root=>realpath(root)));
+    if(!remote(filename)) filename=await realpath(filename).catch(()=>filename);
+  }
   budget.bytes=(budget.bytes||0)+Buffer.byteLength(code);
   if(stack.length>8 || budget.count>40 || code.length>4*1024*1024 || budget.bytes>8*1024*1024 || Date.now()>budget.deadline) throw new Error('样式导入过多或文件过大，请使用已经启动的开发服务链接');
   const ast=postcss.parse(code,{from:filename}); const imports=[]; ast.walkAtRules(/^import$/i,rule=>imports.push(rule));

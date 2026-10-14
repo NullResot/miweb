@@ -410,7 +410,7 @@ if (production) {
 const listener = app.listen(port, host, () => {
   process.parentPort?.postMessage({ type: "miweb-ready", port: listener.address().port });
   console.log(
-    `\n  微调 Miweb → http://${host}:${port}\n  本地项目接入: ${localAccess ? "开启" : "关闭"}\n`,
+    `\n  微调 Miweb → http://${host}:${listener.address().port}\n  本地项目接入: ${localAccess ? "开启" : "关闭"}\n`,
   );
 });
 const cleanup = setInterval(() => {

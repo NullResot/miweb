@@ -5,6 +5,12 @@ import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 
 const require = createRequire(import.meta.url);
+// Recent Electron packages install the executable lazily. A release build must
+// have the complete distribution before electron-builder copies electronDist.
+const electronInstall = path.join(path.dirname(require.resolve('electron/package.json')), 'install.js');
+const electronResult = spawnSync(process.execPath, [electronInstall], { stdio: 'inherit', env: process.env, windowsHide: true });
+if (electronResult.error) throw electronResult.error;
+if (electronResult.status !== 0) process.exit(electronResult.status || 1);
 const core = path.dirname(require.resolve('playwright-core/package.json'));
 const destination = path.resolve('desktop-resources/browsers');
 const cache = process.env.PLAYWRIGHT_BROWSERS_PATH || (process.platform === 'win32'

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import os from 'node:os';
 import http from 'node:http';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, rm, symlink } from 'node:fs/promises';
 import postcss from 'postcss';
 import { safeProjectCss } from '../server/project-css.mjs';
 
@@ -55,4 +55,34 @@ test('CSS Modules composition and value imports cannot escape through the built-
   await assert.rejects(safeProjectCss('@value file: "../outside.css"; .button { composes: secret from file }',entry,[root]),/项目目录/);
   await assert.rejects(safeProjectCss('@value secret from "../outside.css";',entry,[root]),/项目目录/);
   assert.ok((await safeProjectCss('.button { composes: base from "./base.css" }',entry,[root])).includes('composes'));
+});
+
+test('canonical project aliases permit their own imports but reject symlink escapes',async t=>{
+  const {base,root}=await fixture(t);
+  const alias=path.join(base,'project-alias');
+  await symlink(root,alias,'junction');
+  await writeFile(path.join(root,'nested','child.css'),'.child { width:141px; }');
+  const entry=path.join(alias,'main.css');
+  const css=await safeProjectCss('@import "./nested/child.css";',entry,[alias]);
+  assert.match(css,/width:141px/);
+  assert.ok((await safeProjectCss('.button { composes: child from "./nested/child.css" }',entry,[alias])).includes('composes'));
+  await writeFile(entry,'@import "./nested/child.css"; .root { color:blue; }');
+  await writeFile(path.join(root,'nested','child.css'),'@import "../main.css"; .child { width:141px; }');
+  const circular=await safeProjectCss('@import "./nested/child.css"; .root { color:blue; }',entry,[alias]);
+  assert.equal((circular.match(/\.root\b/g)||[]).length,1);
+  assert.equal((circular.match(/\.child\b/g)||[]).length,1);
+  const external=path.join(base,'external');
+  await mkdir(external);
+  await writeFile(path.join(external,'outside.css'),'.outside { color:red; }');
+  await symlink(external,path.join(root,'nested','escape'),'junction');
+  await assert.rejects(safeProjectCss('@import "./nested/escape/outside.css";',entry,[alias]),/项目目录/);
+  await assert.rejects(safeProjectCss('.button { composes: outside from "./nested/escape/outside.css" }',entry,[alias]),/项目目录/);
+});
+
+test('Windows path casing is canonicalized before the project boundary check',{skip:process.platform!=='win32'},async t=>{
+  const {root}=await fixture(t);
+  await writeFile(path.join(root,'nested','child.css'),'.child { height:61px; }');
+  const inputRoot=root.toUpperCase();
+  const css=await safeProjectCss('@import "./nested/child.css";',path.join(inputRoot,'main.css'),[inputRoot]);
+  assert.match(css,/height:61px/);
 });
