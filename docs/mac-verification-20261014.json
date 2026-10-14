@@ -1,0 +1,39 @@
+{
+  "version": "0.3.1",
+  "sourceCommit": "2915b7c79b6dc96f5d7cf2f90a8116eb151671f4",
+  "release": "https://github.com/NullResot/miweb/releases/tag/v0.3.1",
+  "workflow": "https://github.com/NullResot/miweb/actions/runs/38566989867",
+  "macOSMinimum": "13.0.0",
+  "developerIdSigned": false,
+  "notarized": false,
+  "platforms": {
+    "arm64": {
+      "asset": "Miweb-mac-arm64.dmg",
+      "bytes": 251963940,
+      "sha256": "e5298b6f7dcda33aa32602c4d04c664e4ee35d23e920bde3ec44f71735d04c33",
+      "anonymousDownloadHTTP": 200,
+      "installedDesktopChecks": 10,
+      "bundleAndBrowserArchitecture": [
+        "arm64"
+      ],
+      "signatureVerifiedBeforeAndAfterRuntime": true,
+      "adHoc": true,
+      "firstQuarantinedFinderLaunchVerified": false,
+      "temporaryMountAndInstallationCleaned": true
+    },
+    "x64": {
+      "asset": "Miweb-mac-x64.dmg",
+      "bytes": 264235131,
+      "sha256": "f1296d3bd2655ea394bcddfd3e5cc0138a1c0ac38d0e60f6fce769956e2efe92",
+      "anonymousDownloadHTTP": 200,
+      "installedDesktopChecks": 10,
+      "bundleAndBrowserArchitecture": [
+        "x86_64"
+      ],
+      "signatureVerifiedBeforeAndAfterRuntime": true,
+      "adHoc": true,
+      "firstQuarantinedFinderLaunchVerified": false,
+      "temporaryMountAndInstallationCleaned": true
+    }
+  }
+}

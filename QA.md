@@ -120,3 +120,14 @@ Final v0.2.1 release verification completed:
 - Public documentation workflow https://github.com/NullResot/miweb/actions/runs/38558457469 succeeded; the 9-page desktop/mobile public-site checks and search/navigation checks also passed.
 
 Machine-readable final evidence is in [desktop-verification-20261014.json](docs/desktop-verification-20261014.json). The local installer at `release/Miweb-Setup-x64.exe` is the verified GitHub release asset; the earlier local unpacked debug build is not the release deliverable.
+
+
+## macOS v0.3.1 (2026-10-14)
+
+Native Apple Silicon and Intel runners passed unit/integration tests, packaged-app smoke and DMG installation smoke. The DMG was mounted read-only, copied into an isolated installation folder, and tested for real HTML/React/Vue imports, edits, source/patch exports, native bridge/save flow, Cmd+Z/redo, window close/reopen, and explicit Quit with backend cleanup. Both installed apps passed 10 desktop checks. Strict signatures verified both before and after runtime; Electron and bundled Chromium architectures matched. Temporary installations and mounts were cleaned.
+
+The initial native click test sampled geometry before the recreated frame was ready; the helper now waits for bridge readiness and stable layout, rechecks the rectangles and hit targets, and sends a real mouse click. No editor feature was rewritten to satisfy the test.
+
+Release https://github.com/NullResot/miweb/releases/tag/v0.3.1 contains Windows x64, Apple Silicon/Intel DMG and ZIP assets, and a combined SHA256 manifest. Both stable Mac download URLs returned anonymous HTTP 200; each tested DMG hash matched the published manifest and GitHub asset digest. Info.plist confirms macOS 13.0.0 minimum.
+
+Mac apps use ad-hoc signatures, not Apple Developer ID or notarization. CI launches a copied local build, so Finder's first launch of an Internet-quarantined download is not verified. The installation guide documents that limitation and Apple's per-app trusted-open flow. Detailed evidence: [mac-verification-20261014.json](docs/mac-verification-20261014.json).
