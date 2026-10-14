@@ -1,0 +1,130 @@
+name: Desktop release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths:
+      - '.github/workflows/desktop.yml'
+      - 'desktop/**'
+      - 'server/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'electron-builder.config.cjs'
+      - 'vite.config.*'
+      - 'tsconfig*.json'
+  pull_request:
+    paths:
+      - '.github/workflows/desktop.yml'
+      - 'desktop/**'
+      - 'server/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'examples/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'electron-builder.config.cjs'
+      - 'vite.config.*'
+      - 'tsconfig*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Windows x64 installer
+    runs-on: windows-latest
+    timeout-minutes: 40
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install dependencies
+        run: npm ci
+      - name: Check release version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: node -e "const p = require('./package.json'); if (process.env.RELEASE_TAG !== 'v' + p.version) throw new Error('Release tag must match package.json version');"
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Run unit tests
+        run: npm test
+      - name: Build Windows installer with bundled Chromium
+        run: npm run desktop:dist:win
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/desktop-resources/browsers
+      - name: Test packaged desktop application
+        run: node tests/desktop-smoke.mjs
+        env:
+          DESKTOP_EXECUTABLE: ${{ github.workspace }}/release/win-unpacked/Miweb.exe
+      - name: Calculate installer checksum
+        shell: pwsh
+        run: |
+          $installer = Get-Item -LiteralPath release/Miweb-Setup-x64.exe
+          $checksum = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$checksum  $($installer.Name)" | Set-Content -LiteralPath release/SHA256SUMS.txt -Encoding utf8NoBOM
+      - name: Upload tested installer
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: miweb-windows-x64
+          path: |
+            release/Miweb-Setup-x64.exe
+            release/SHA256SUMS.txt
+          if-no-files-found: error
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: windows
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Download tested build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: gh run download "$RUN_ID" --name miweb-windows-x64 --dir release
+      - name: Publish Windows release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          printf '%s\n' \
+            'Miweb 桌面版，内置运行环境和 Chromium，安装后即可使用。' \
+            '' \
+            '- Windows 10 / 11，x64。下载 `Miweb-Setup-x64.exe`，双击安装。' \
+            '- 安装包目前未进行代码签名，Windows 可能显示未知发布者提示。' \
+            '- 导入本地项目或网页链接，在页面上微调布局，再导出代码。' \
+            '- `SHA256SUMS.txt` 提供安装包校验值。' \
+            '' \
+            "使用文档：https://${GH_REPO%/*}.github.io/${GH_REPO#*/}/" \
+            > release-notes.md
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/Miweb-Setup-x64.exe release/SHA256SUMS.txt --clobber
+          else
+            gh release create "$RELEASE_TAG" release/Miweb-Setup-x64.exe release/SHA256SUMS.txt \
+              --verify-tag --title "Miweb $RELEASE_TAG" --notes-file release-notes.md
+          fi

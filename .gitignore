@@ -18,3 +18,7 @@ coverage/
 *.tar.gz
 *.tar.gz.sha256
 deploy/.nginx-validation-*/
+desktop-resources/
+release/
+docs/site/.vitepress/dist/
+docs/site/.vitepress/cache/

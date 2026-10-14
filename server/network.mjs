@@ -76,7 +76,7 @@ export function allowedAddress(address, localAccess = false) {
   try {
     const parsed = ipaddr.process(address);
     const range = parsed.range();
-    return range === "unicast" || (localAccess && range === "loopback");
+    return range === "unicast" || (localAccess && ["loopback", "private", "uniqueLocal"].includes(range));
   } catch {
     return false;
   }
@@ -115,7 +115,7 @@ export async function validateUrl(input, localAccess = false) {
     addresses.some((item) => !allowedAddress(item.address, localAccess))
   )
     throw new Error(
-      "这个地址不能访问。公开服务仅支持公开网站；本地服务可访问 localhost",
+      "这个地址不能访问。公开服务仅支持公开网站；本地服务可访问 localhost 和局域网 IP，不能访问保留地址",
     );
   return { url, addresses };
 }

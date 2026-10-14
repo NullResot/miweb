@@ -12,6 +12,7 @@ import { captureProject } from "./project.mjs";
 import { exportChanges } from "./source.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const version = JSON.parse(await readFile(path.join(root, "package.json"), "utf8")).version;
 const production = process.argv.includes("--production");
 const host = process.env.HOST || "127.0.0.1";
 const port = Number(process.env.PORT || 4173);
@@ -253,7 +254,7 @@ app.get("/api/health", (_request, response) =>
     ok: true,
     localAccess,
     requiresKey: !!accessKey,
-    version: "0.1.0",
+    version,
   }),
 );
 app.post("/api/open", async (request, response) => {
@@ -406,11 +407,12 @@ if (production) {
     }
   });
 }
-const listener = app.listen(port, host, () =>
+const listener = app.listen(port, host, () => {
+  process.parentPort?.postMessage({ type: "miweb-ready", port: listener.address().port });
   console.log(
     `\n  微调 Miweb → http://${host}:${port}\n  本地项目接入: ${localAccess ? "开启" : "关闭"}\n`,
-  ),
-);
+  );
+});
 const cleanup = setInterval(() => {
   for (const [id, session] of sessions)
     if (Date.now() - session.lastAccess > ttl) sessions.delete(id);

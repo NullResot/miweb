@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { safeRequest, validateUrl } from "./network.mjs";
+import { allowedAddress, safeRequest, validateUrl } from "./network.mjs";
 import { randomUUID } from "node:crypto";
 
 let browserPromise;
@@ -53,7 +53,9 @@ export async function capturePage(
     throw Object.assign(new Error("正在打开其他页面，请稍后重试"), {
       status: 429,
     });
-  await validateUrl(url, localAccess);
+  const entry = await validateUrl(url, localAccess);
+  // A public page must not gain access to services on the user's computer/LAN.
+  const allowLocalResources = localAccess && entry.addresses.every(({ address }) => !allowedAddress(address));
   activeCaptures++;
   let context;
   try {
@@ -86,7 +88,7 @@ export async function capturePage(
         return route.abort();
       try {
         const response = await safeRequest(request.url(), {
-          localAccess: localAccess && (!trustedLocalOrigin || new URL(request.url()).origin === trustedLocalOrigin),
+          localAccess: allowLocalResources && (!trustedLocalOrigin || new URL(request.url()).origin === trustedLocalOrigin),
           method: request.method(),
           headers: request.headers(),
           body: request.postDataBuffer(),

@@ -1,16 +1,26 @@
 {
   "name": "miweb",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server/index.mjs",
+    "dev": "vitepress dev docs/site --host 127.0.0.1 --port 4173",
     "build": "tsc -b && vite build",
-    "start": "node server/index.mjs --production",
+    "start": "electron .",
     "test": "node --test tests/*.test.mjs",
     "test:integration": "node --test tests/integration/*.test.mjs",
     "test:e2e": "playwright test",
-    "browser:install": "playwright install chromium"
+    "browser:install": "playwright install chromium",
+    "docs:dev": "vitepress dev docs/site --host 127.0.0.1 --port 4173",
+    "docs:build": "vitepress build docs/site",
+    "docs:preview": "vitepress preview docs/site --host 127.0.0.1 --port 4173",
+    "desktop:dev": "npm run build && electron .",
+    "desktop:stage": "node scripts/stage-browser.mjs",
+    "desktop:pack": "npm run build && npm run desktop:stage && electron-builder --config electron-builder.config.cjs --dir --win --x64 --publish never",
+    "desktop:dist:win": "npm run build && npm run desktop:stage && electron-builder --config electron-builder.config.cjs --win --x64 --publish never",
+    "test:desktop": "node tests/desktop-smoke.mjs",
+    "editor:dev": "node server/index.mjs",
+    "server:start": "node server/index.mjs --production"
   },
   "dependencies": {
     "@babel/parser": "^7.28.4",
@@ -34,6 +44,12 @@
   "devDependencies": {
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "typescript": "^5.9.3"
-  }
+    "electron": "44.7.2",
+    "electron-builder": "26.15.3",
+    "typescript": "^5.9.3",
+    "vitepress": "2.0.0-alpha.20"
+  },
+  "description": "Miweb visual layout editor for AI-generated frontends",
+  "author": "NullResot",
+  "main": "desktop/main.cjs"
 }

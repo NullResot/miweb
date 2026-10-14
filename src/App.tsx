@@ -640,6 +640,17 @@ export default function App() {
     guarded(() => void performOpen(input));
   };
   const openDemo = () => guarded(() => void performOpen("", true));
+  const selectProject = () => {
+    if (!window.miwebDesktop) {
+      setDialog("import");
+      return;
+    }
+    void window.miwebDesktop.selectProject().then((directory) => {
+      if (!directory) return;
+      setLocation(directory);
+      openPage(directory);
+    }).catch(handleError);
+  };
   const goHome = () =>
     guarded(() => {
       setSession(null);
@@ -860,7 +871,7 @@ export default function App() {
         <div className="header-actions">
           <button
             className="quiet-button import-button"
-            onClick={() => setDialog("import")}
+            onClick={selectProject}
           >
             <FolderOpen size={16} />
             <span>本地项目</span>
@@ -904,7 +915,7 @@ export default function App() {
           location={location}
           onLocationChange={setLocation}
           onOpen={openPage}
-          onImport={() => setDialog("import")}
+          onImport={selectProject}
           onDemo={openDemo}
           loading={loading}
           error={error}

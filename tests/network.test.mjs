@@ -24,7 +24,10 @@ test("public deployments reject private, loopback, reserved and mapped IPv6 addr
     assert.equal(allowedAddress(address), false, address);
   assert.equal(allowedAddress("8.8.8.8"), true);
   assert.equal(allowedAddress("127.0.0.1", true), true);
-  assert.equal(allowedAddress("10.1.2.3", true), false);
+  for (const address of ["10.1.2.3", "172.16.0.1", "172.31.255.255", "192.168.1.2", "fd00::1"])
+    assert.equal(allowedAddress(address, true), true);
+  for (const address of ["169.254.169.254", "0.0.0.0", "224.0.0.1", "fe80::1"])
+    assert.equal(allowedAddress(address, true), false);
 });
 test("rejects non-web schemes and credentials before making a request", async () => {
   await assert.rejects(validateUrl("file:///etc/passwd"), /HTTP/);

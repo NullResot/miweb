@@ -1,27 +1,50 @@
-# 微调 Miweb
+# Miweb 微调
 
-一个用来微调 AI 生成网页的工作台。打开页面，点选元素，用鼠标或方向键调整位置与尺寸，然后复制代码。
+**轻量的桌面网页布局微调工具。为 AI 生成的前端，补上最后一点调整。**
 
-## 开始使用
+[下载 Windows 桌面版](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) · [使用文档](https://nullresot.github.io/miweb/) · [代码导出](#操作与代码导出) · [开发与构建](#开发与构建)
 
-需要 Node.js 22.12+，推荐 Node.js 24。
+AI 生成的页面已经差不多了，但按钮还想往上一点，卡片还想宽一点。
 
-```powershell
-npm ci
-npm run browser:install
-npm run dev
-```
+Miweb 让你直接在页面上调整这些细节：输入网页链接，或导入本地项目，选中元素，用鼠标拖动、方向键微调，再复制代码带回项目。
 
-打开 **http://127.0.0.1:4173**，输入网址或本地项目路径，也可以先点“试用示例”。
+![Miweb 工作台：选中按钮，调整位置和尺寸，定位对应源码](docs/images/editor-preview.png)
 
-生产模式：
+*工作台截图，使用内置示例项目。*
 
-```powershell
-npm run build
-npm start
-```
+## 核心功能
 
-## 接入页面
+- **安装后直接使用** — 内置运行环境与 Chromium，无需安装 Node.js、配置服务或提供 AI API Key。
+- **看着页面微调** — 拖动位置和尺寸，也可以输入精确的偏移、宽高、字号和圆角。
+- **只修改需要修改的代码** — 导入支持的项目源码后，尽量将改动落在对应元素，保留无关代码、注释与格式。
+- **网页链接也能用** — 支持公开网址和本地开发链接，导出 CSS 或 JavaScript 布局补丁。
+- **随时撤销和对比** — 支持撤销、重做、恢复元素，以及调整前后比较。
+- **方便带走结果** — 复制代码，或查看、下载修改后的源文件、最小差异和布局补丁。
+
+适合微调 AI 生成的网页，也适合调整已有前端的布局细节。编辑过程不需要调用 AI 模型或提供 API Key。
+
+## 怎么用
+
+1. **打开页面**：粘贴网址、本地开发链接或项目路径，也可以选择项目文件夹。第一次使用可先点击“试用示例”。
+2. **选中元素**：点击画布中的按钮、文字或容器，用鼠标和方向键调整。
+3. **检查效果**：切换桌面、平板或手机预览，查看调整前后的变化。
+4. **带走代码**：复制或下载结果，再应用到自己的项目。
+
+**导入源码，导出局部源码修改；只提供网址，导出布局补丁。** Miweb 不会从构建后的网页还原原始 React/Vue 工程，也不会自动覆盖你的项目文件。
+
+## 安装桌面版
+
+下载 [Windows x64 安装包](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe)，双击安装，打开 Miweb 即可使用。支持 Windows 10 / 11 x64。
+
+- 点击“选择项目文件夹”，使用系统目录选择窗口接入本地项目。
+- 粘贴公开网址或本地开发链接，导入当前页面。
+- 暂时没有项目，可以先点击“试用示例”。
+
+安装包包含编辑器和页面渲染器，不需要用户另外安装运行依赖。编辑服务仅监听本机，应用退出时关闭。当前版本未进行代码签名，Windows 可能提示未知发布者；安装包校验值见对应 [Release](https://github.com/NullResot/miweb/releases)。macOS / Linux 安装包尚未发布。
+
+完整步骤见 [安装说明](https://nullresot.github.io/miweb/guide/install.html) 和 [第一次微调](https://nullresot.github.io/miweb/guide/getting-started.html)。
+
+## 支持哪些输入
 
 | 输入 | 预览方式 | 导出结果 |
 | --- | --- | --- |
@@ -34,7 +57,7 @@ npm start
 
 其他包依赖需要已安装在被连接项目中。上传文件夹会排除 `node_modules`、`.git`、常见构建产物和 `.env`；因此依赖其他包的上传项目可能无法预览。此时使用本地目录模式或已启动的开发链接。
 
-## 调整与交付
+## 操作与代码导出
 
 - 点击元素，或者通过元素列表和搜索选择；可选择父元素。
 - 拖动元素改变位置，拖动八个控制点改变宽高。
@@ -54,7 +77,7 @@ Windows 剪贴板可能把换行转换为 CRLF。下载的源码文件和生成�
 
 位移使用独立的 CSS `translate`，保留原有的 `transform`。宽高以 border-box 像素计算。修改默认作用于所有屏幕宽度；不同宽度预览用于检查影响。Flex/Grid、min/max-width、父级裁剪、内联元素等布局约束仍然有效，不会为绕开约束自动重写页面结构。
 
-## 产品边界
+## 使用限制
 
 - 编辑当前地址的渲染快照，暂停原页面脚本与链接导航；不会操作子页面。
 - 不复制用户浏览器的登录态。需要登录、反自动化、Canvas、Shadow DOM、跨域内嵌内容或依赖实时交互的页面，可能无法完整捕获。
@@ -62,7 +85,7 @@ Windows 剪贴板可能把换行转换为 CRLF。下载的源码文件和生成�
 - 会话保存在服务进程内，默认空闲有效期 120 分钟。改动保存在当前浏览器；服务重启或会话过期后需要重新导入页面。完成调整后应复制或下载代码。
 - 原文件由用户在自己的项目中替换或通过 diff 应用。不会自动保存到原项目或部署目标网站。
 
-## 公开部署
+## 兼容的服务部署
 
 这是 **React 前端 + Node.js/Express 服务 + Chromium 渲染器** 的完整网站，需要能够运行 Node.js 和 Chromium 的服务器；单纯静态托管不能完成网页捕获。使用 HTTPS 反向代理，服务端不需要接入 AI 模型或付费 API。
 
@@ -71,7 +94,7 @@ $env:HOST = '0.0.0.0'
 $env:LOCAL_ACCESS = '0'
 $env:MIWEB_ACCESS_KEY = '替换成随机生成的访问密钥'
 $env:PUBLIC_ORIGIN = 'https://tune.example.com'
-npm start
+npm run server:start
 ```
 
 公开监听必须配置访问密钥，界面会要求输入。公开模式禁用本地目录、localhost 和内网访问，仍支持用户选择文件夹上传。公开网站不会自动读取访问者电脑上的目录路径。这里的服务适用于受控用户或团队使用，尚未包含独立用户账号、团队权限、付费和跨服务持久化。
@@ -103,21 +126,56 @@ Compose 仅将服务端口绑定到服务器的 `127.0.0.1`，公开访问由 HT
 
 预览使用无 `allow-same-origin` 的 sandbox iframe 和只允许微调桥接脚本执行的 CSP；原网页脚本被移除。文件夹导入检查路径、大小和敏感文件。服务 API 可使用访问密钥；预览资源只通过随机会话/资源地址读取。
 
-## 验证
+## 开发与构建
+
+开发环境需要 Node.js 22.12+（推荐 24）和 Git。
+
+```sh
+git clone https://github.com/NullResot/miweb.git
+cd miweb
+npm ci
+npm run browser:install
+npm run desktop:dev
+```
+
+构建 Windows x64 一键安装包：
+
+```sh
+npm run desktop:dist:win
+```
+
+输出为 `release/Miweb-Setup-x64.exe`，包含 Chromium。打包过程可能下载运行环境。`npm run desktop:pack` 仅生成未安装的应用目录。
+
+公开网站现在是静态文档站，开发和构建方式如下：
+
+```sh
+npm run dev
+npm run docs:build
+```
+
+文档由 GitHub Actions 构建并发布到 GitHub Pages，源文件在 `docs/site`。工作台独立开发入口是 `npm run editor:dev`。详细说明见 [开发文档](docs/site/reference/developing.md)。
+
+## 开发与测试
 
 ```powershell
 npm test
 npm run test:integration
 npm run build
 npm run test:e2e
+npm run test:desktop
+npm run docs:build
 ```
 
 单元测试覆盖最小源码修改、动态样式、重复实例、源文件格式保留，以及网络访问边界。集成测试实际启动 Chromium 验证 HTML、React、Vue、JavaScript 内容、重定向、CSS 和项目隔离。E2E 启动独立的生产服务，执行真实鼠标、键盘、复制和下载流程。最终验收结果、容器测试与已知边界见 [QA.md](QA.md)。
 
-主要文件：
+### 项目结构
+
+- `desktop/main.cjs`、`desktop/preload.cjs`：桌面窗口、本机服务与系统文件夹选择。
+- `docs/site`：静态文档站。
+- `.github/workflows`：文档部署与桌面发布。
 
 - `src/App.tsx`：工作台、选择、属性、撤销、对比与导出。
-- `src/Landing.tsx`、`src/dark-gallery.css`：黑色 Apple 产品展示风格首页与分章节入场动效。
+- `src/Landing.tsx`、`src/dark-gallery.css`：首页与分章节入场动效。
 - `src/ScrollShowcase.tsx`、`src/scroll-showcase.css`：原生滚动操作演示及减少动态效果支持。
 - `src/editor-gallery.css`：真实工作台与弹窗的统一皮肤。
 - `src/bridge.js`：隔离画布内的拖动、缩放和键盘控制。
@@ -129,9 +187,9 @@ npm run test:e2e
 
 实现参考：[Playwright 浏览器上下文](https://playwright.dev/docs/browser-contexts)、[Vite JavaScript API](https://vite.dev/guide/api-javascript)、[MDN iframe sandbox 与同源限制](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe)。
 
-## 前端版本与回档
+## 设计与版本恢复
 
-当前前端按用户最新指定的 [Apple iPhone 18 Pro 页面](https://www.apple.com.cn/iphone-18-pro/) 改为整体黑色、分章节滚动叙事，结合 [Impeccable](https://github.com/pbakaus/impeccable) 与 [Taste Skill](https://github.com/leonxlnx/taste-skill)；产品和设计约定分别记录在 `PRODUCT.md`、`DESIGN.md`。动效使用 CSS 视图时间线与 IntersectionObserver，不增加运行时依赖。
+当前界面使用黑色主题与分章节滚动演示，动效基于 CSS 视图时间线与 IntersectionObserver，并支持减少动态效果。产品约定见 [PRODUCT.md](PRODUCT.md)，设计说明见 [DESIGN.md](DESIGN.md)。
 
 改版前的完整前端与截图保存在 [原版备份](design-versions/2026-10-13-original/README.md)。需要回档时先保存当前 `src`，再用备份的 `src` 替换，并按需恢复 `index.html` 和 `examples/atelier/index.html`，然后执行 `npm run build`。后端无需回档。
 
