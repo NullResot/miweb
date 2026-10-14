@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitepress'
+import { readFile } from 'node:fs/promises'
+import postcss from 'postcss'
 
 const base = process.env.MIWEB_DOCS_BASE || '/miweb/'
 
@@ -10,6 +12,23 @@ export default defineConfig({
   cleanUrls: false,
   appearance: 'dark',
   lastUpdated: true,
+  vite: {
+    oxc: { jsx: { runtime: 'automatic', importSource: 'react' } },
+    plugins: [{
+      name: 'scope-existing-marketing-css',
+      enforce: 'pre',
+      async load(id) {
+        if (!id.endsWith('dark-gallery.css?website')) return
+        const stylesheet = postcss.parse(await readFile(id.split('?')[0], 'utf8'))
+        stylesheet.walkRules(rule => {
+          if (rule.parent?.type === 'atrule' && /keyframes$/.test(rule.parent.name)) return
+          rule.selectors = rule.selectors.map(selector => selector === ':root' || selector === 'body'
+            ? '.marketing-home' : `.marketing-home ${selector}`)
+        })
+        return stylesheet.toString()
+      },
+    }],
+  },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}logo.svg` }],
     ['meta', { name: 'theme-color', content: '#101012' }],
@@ -18,7 +37,8 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'Miweb 微调',
     nav: [
-      { text: '文档', link: '/' },
+      { text: '首页', link: '/' },
+      { text: '文档', link: '/guide/overview' },
       { text: '下载桌面版', link: '/guide/install' },
       { text: '更新记录', link: 'https://github.com/NullResot/miweb/releases' },
     ],
@@ -26,7 +46,7 @@ export default defineConfig({
       {
         text: '开始使用',
         items: [
-          { text: 'Miweb 是什么', link: '/' },
+          { text: 'Miweb 是什么', link: '/guide/overview' },
           { text: '安装桌面版', link: '/guide/install' },
           { text: '第一次微调', link: '/guide/getting-started' },
         ],

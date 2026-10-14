@@ -203,7 +203,10 @@ async function openWindow() {
       devTools: !app.isPackaged,
     },
   });
-  window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    if ([`${docsUrl}#how-it-works`, `${docsUrl}guide/overview.html`].includes(url)) void shell.openExternal(url);
+    return { action: "deny" };
+  });
   window.webContents.on("will-navigate", (event, url) => {
     if (!isAppPage(url, origin)) event.preventDefault();
   });
@@ -221,7 +224,7 @@ function configureMenu() {
     { label: "Miweb", submenu: [{ role: "about", label: "关于 Miweb" }, { type: "separator" }, { role: "quit", label: "退出" }] },
     { label: "编辑", submenu: [{ role: "undo", label: "撤销" }, { role: "redo", label: "重做" }, { type: "separator" }, { role: "cut", label: "剪切" }, { role: "copy", label: "复制" }, { role: "paste", label: "粘贴" }, { role: "selectAll", label: "全选" }] },
     { label: "窗口", submenu: [{ role: "minimize", label: "最小化" }, { role: "close", label: "关闭" }] },
-    { label: "帮助", submenu: [{ label: "使用文档", click: () => { void shell.openExternal(docsUrl); } }] },
+    { label: "帮助", submenu: [{ label: "使用文档", click: () => { void shell.openExternal(`${docsUrl}guide/overview.html`); } }] },
   ]));
 }
 

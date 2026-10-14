@@ -98,8 +98,8 @@ export default function ScrollShowcase({ onTry }: { onTry: () => void }) {
   const regions = useRef<(HTMLDivElement | null)[]>([]);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollStep = useRef(0);
-  const [activeStep, setActiveStep] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 2 : 0);
-  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [activeStep, setActiveStep] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [manual, setManual] = useState(false);
 
   useEffect(() => {

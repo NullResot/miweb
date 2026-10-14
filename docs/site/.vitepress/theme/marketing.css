@@ -1,0 +1,30 @@
+
+.marketing-home { background:#000; color:#f5f5f7; }
+.marketing-home *, .marketing-home *::before, .marketing-home *::after { box-sizing:border-box; }
+.marketing-home button { font:inherit; border:0; background:transparent; color:inherit; cursor:pointer; }
+.marketing-home a { text-decoration:none; }
+.marketing-home .app-header { display:flex; align-items:center; justify-content:space-between; z-index:20; }
+.marketing-home .logo { display:flex; align-items:center; gap:10px; white-space:nowrap; color:#f5f5f7; }
+.marketing-home .logo > span:last-child { display:flex; align-items:baseline; gap:7px; }
+.marketing-home .logo-mark { position:relative; width:29px; height:29px; display:block; border-radius:8px; }
+.marketing-home .logo-mark span { position:absolute; width:14px; height:2px; left:8px; border-radius:2px; }
+.marketing-home .logo-mark span:nth-child(1) { top:8px; }
+.marketing-home .logo-mark span:nth-child(2) { top:14px; left:5px; }
+.marketing-home .logo-mark span:nth-child(3) { top:20px; }
+.marketing-home .logo-mark span::after { content:""; position:absolute; width:4px; height:4px; border:1px solid; top:-2px; left:5px; border-radius:1px; }
+.marketing-home .gallery-entry-links a { display:inline-flex; align-items:center; gap:7px; min-height:36px; color:#66aaff; font-size:13px; }
+.marketing-home .website-download-entry > span { flex:1; min-width:0; font-size:14px; }
+.marketing-home .website-downloads { max-width:1180px; margin:auto; padding:60px 28px 110px; scroll-margin-top:88px; }
+.marketing-home .website-downloads h2 { font-size:clamp(32px,4vw,54px); font-weight:600; margin:0 0 24px; line-height:1.2; letter-spacing:-.025em; }
+.marketing-home .website-downloads > p { color:#a1a1a6; line-height:1.8; margin-bottom:28px; }
+.marketing-home .website-downloads > div { display:flex; gap:16px; flex-wrap:wrap; }
+.marketing-home .website-downloads .website-install-note { font-size:14px; margin-top:24px; }
+.marketing-home .website-install-note a { color:#66aaff; margin-left:14px; text-decoration:underline; }
+@media(max-width:767px) {
+ .marketing-home .home-nav { gap:14px; }
+ .marketing-home .home-nav a:nth-child(2) { display:none; }
+ .marketing-home .home-nav a:last-child { display:inline-flex; }
+ .marketing-home .app-header > .gallery-primary { display:none; }
+ .marketing-home .website-download-entry > span { font-size:12px; }
+ .marketing-home .website-downloads > div { flex-direction:column; align-items:flex-start; }
+}

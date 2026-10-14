@@ -2,7 +2,7 @@
 
 **轻量的桌面网页布局微调工具。为 AI 生成的前端，补上最后一点调整。**
 
-[Windows x64](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) · [macOS Apple 芯片](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-arm64.dmg) · [macOS Intel](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-x64.dmg) · [使用文档](https://nullresot.github.io/miweb/) · [开发与构建](#开发与构建)
+[Windows x64](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) · [macOS Apple 芯片](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-arm64.dmg) · [macOS Intel](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-x64.dmg) · [使用文档](https://nullresot.github.io/miweb/guide/overview.html) · [开发与构建](#开发与构建)
 
 AI 生成的页面已经差不多了，但按钮还想往上一点，卡片还想宽一点。
 
@@ -160,7 +160,7 @@ npm run desktop:dist:mac
 
 Apple 芯片输出 `release/Miweb-mac-arm64.dmg`，Intel 输出 `release/Miweb-mac-x64.dmg`；`npm run desktop:pack:mac` 仅生成未安装的 `.app` 目录。请在对应架构的原生 macOS 环境打包，Chromium 与应用必须使用同一架构。安装包均包含 Chromium，打包过程可能下载运行环境。macOS 包默认采用临时签名，不执行 Apple 公证。
 
-公开网站现在是静态文档站，开发和构建方式如下：
+公开网站包含完整滚动演示首页与静态文档，开发和构建方式如下：
 
 ```sh
 npm run dev

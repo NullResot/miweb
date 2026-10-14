@@ -847,7 +847,7 @@ export default function App() {
     <div className={`app ${session ? "editing" : "home"}`}>
       <header className="app-header">
         <Logo onClick={goHome} />
-        {!session && <nav className="home-nav" aria-label="首页导航"><a href="#how-it-works">操作演示</a><a href="#your-code">代码交付</a></nav>}
+        {!session && <nav className="home-nav" aria-label="首页导航"><a href="https://nullresot.github.io/miweb/#how-it-works" target="_blank" rel="noreferrer">操作演示</a><a href="https://nullresot.github.io/miweb/guide/overview.html" target="_blank" rel="noreferrer">使用文档</a></nav>}
         {session && (
           <form
             className="header-url"

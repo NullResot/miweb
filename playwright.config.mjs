@@ -19,7 +19,7 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  webServer: {
+  webServer: [{
     command: "node server/index.mjs --production",
     url: "http://127.0.0.1:4188/api/health",
     reuseExistingServer: false,
@@ -31,5 +31,10 @@ export default defineConfig({
       MIWEB_ACCESS_KEY: "",
       PUBLIC_ORIGIN: "",
     },
-  },
+  }, {
+    command: "node node_modules/vitepress/bin/vitepress.js preview docs/site --host 127.0.0.1 --port 4288",
+    url: "http://127.0.0.1:4288/miweb/",
+    reuseExistingServer: false,
+    timeout: 20000,
+  }],
 });

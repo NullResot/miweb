@@ -173,6 +173,7 @@
       }
       event.preventDefault();
       event.stopImmediatePropagation();
+      window.focus();
       const id = element.dataset.miId;
       select(id);
       const rect = element.getBoundingClientRect();

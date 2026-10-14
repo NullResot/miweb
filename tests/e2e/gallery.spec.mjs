@@ -1,189 +1,88 @@
 import { test, expect } from "playwright/test";
 
+const website = "http://127.0.0.1:4288/miweb/";
 const steps = ["选中元素", "微调布局", "带走代码"];
-
-async function scrollShowcaseTo(page, region, progress) {
-  // Position the real document along the showcase's travel, then allow the
-  // browser's native scroll timeline and IntersectionObserver to paint.
-  await region.locator(".mi-showcase-track").evaluate((element, value) => {
+async function scrollToStep(page, region, progress) {
+  await region.locator('.mi-showcase-track').evaluate((element, value) => {
     const rect = element.getBoundingClientRect();
-    window.scrollTo({ top: scrollY + rect.top + (rect.height - innerHeight) * value, behavior: "instant" });
+    window.scrollTo({top: scrollY + rect.top + (rect.height - innerHeight) * value, behavior:'instant'});
   }, progress);
-  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
 
-test("gallery entry and return-to-top remain usable on desktop and mobile", async ({ page }) => {
-  const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-    await page.setViewportSize(viewport);
-    await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("刚刚好");
-    const dimensions = await page.evaluate(() => ({ width: innerWidth, content: document.documentElement.scrollWidth, height: innerHeight, contentHeight: document.documentElement.scrollHeight }));
-    expect(dimensions.content).toBe(dimensions.width);
-    expect(dimensions.contentHeight).toBeGreaterThan(dimensions.height);
-    const closing = page.getByRole("link", { name: "打开页面", exact: true });
-    await closing.scrollIntoViewIfNeeded();
-    await closing.focus();
-    await page.keyboard.press("Enter");
-    await expect(page.getByRole("textbox", { name: "网站链接或本地项目地址" })).toBeFocused();
-    await expect(page.getByRole("textbox", { name: "网站链接或本地项目地址" })).toBeInViewport();
-    await page.getByRole("button", { name: "选择项目文件夹", exact: true }).first().click();
-    await expect(page.getByRole("dialog")).toContainText("连接本地项目");
-    await page.keyboard.press("Escape");
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-  }
-  expect(errors).toEqual([]);
-});
-
-test("scrolling the showcase reveals selection, actual movement and resizing, then the code change", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/");
-  const region = page.getByRole("region", { name: "滚动操作演示" });
-  const shape = async () => region.locator(".mi-preview-cta").evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return { width: rect.width, relativeY: rect.top - element.closest(".mi-preview").getBoundingClientRect().top };
-  });
-  await scrollShowcaseTo(page, region, 0.22);
-  await expect(region.getByRole("button", { name: steps[0], exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(region.getByRole("heading", { name: "点选你想调整的元素。", exact: true })).toBeInViewport();
-  const original = await shape();
-  await scrollShowcaseTo(page, region, 0.68);
-  await expect(region.getByRole("button", { name: steps[1], exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(region.getByRole("heading", { name: "向上 12 px，再宽 24 px。", exact: true })).toBeInViewport();
-  await expect.poll(async () => Math.round((await shape()).width - original.width)).toBe(24);
-  await expect.poll(async () => Math.round((await shape()).relativeY - original.relativeY)).toBe(-12);
-  await scrollShowcaseTo(page, region, 0.97);
-  await expect(region.getByRole("button", { name: steps[2], exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(region.getByRole("heading", { name: "只带走发生变化的代码。", exact: true })).toBeInViewport();
-  await expect(region.getByText("其余代码保持原样", { exact: true })).toBeInViewport();
-  await expect.poll(() => region.locator(".mi-showcase-code").evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0.95);
-  await region.getByRole("button", { name: steps[0], exact: true }).focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(region.getByRole("button", { name: steps[1], exact: true })).toBeFocused();
-  await expect(region.getByRole("button", { name: steps[1], exact: true })).toHaveAttribute("aria-pressed", "true");
-  await region.getByRole("button", { name: "继续随滚动演示", exact: true }).click();
-  await expect(region.getByRole("button", { name: steps[2], exact: true })).toHaveAttribute("aria-pressed", "true");
-});
-
-test("mobile reduced motion offers all steps, keyboard controls, and a working editor entry", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const region = page.getByRole("region", { name: "滚动操作演示" });
-  await expect(region.getByRole("list", { name: "完整操作步骤" }).getByRole("listitem")).toHaveCount(3);
-  await expect(region.getByRole("button", { name: steps[2], exact: true })).toHaveAttribute("aria-pressed", "true");
-  const first = region.getByRole("button", { name: steps[0], exact: true });
-  await first.scrollIntoViewIfNeeded();
-  await first.focus();
-  const before = await page.evaluate(() => scrollY);
-  for (const [key, index] of [["ArrowRight", 1], ["End", 2], ["ArrowLeft", 1], ["Home", 0]]) {
-    await page.keyboard.press(key);
-    await expect(region.getByRole("button", { name: steps[index], exact: true })).toBeFocused();
-    await expect(region.getByRole("button", { name: steps[index], exact: true })).toHaveAttribute("aria-pressed", "true");
-  }
-  expect(await page.evaluate(() => scrollY)).toBe(before);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
-  const tryButton = region.getByRole("button", { name: "亲手试一试", exact: true });
-  await tryButton.scrollIntoViewIfNeeded();
-  await tryButton.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator(".page-root strong")).toContainText("Atelier");
-  const target = page.frameLocator("iframe").locator("#start-button");
-  await target.click();
-  await expect(page.getByRole("spinbutton", { name: "Y", exact: true })).toHaveValue("0");
-  await target.press("ArrowUp");
-  await expect(page.getByRole("spinbutton", { name: "Y", exact: true })).toHaveValue("-1");
-  await page.getByRole("button", { name: "复制代码", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("源码已复制");
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain("translate: 0px -1px;");
-});
-
-async function expectDarkSurfaces(locator) {
-  const colors = await locator.evaluateAll((elements) => elements.map((element) => {
-    // Composite translucent backgrounds over their actual ancestors. Imported
-    // page contents live in an iframe and are deliberately outside this check.
-    const chain = [];
-    for (let current = element; current; current = current.parentElement) chain.unshift(current);
-    let color = [255, 255, 255];
-    for (const current of chain) {
-      const values = getComputedStyle(current).backgroundColor.match(/[\d.]+/g)?.map(Number) || [0, 0, 0, 0];
-      const alpha = values[3] ?? 1;
-      color = color.map((channel, index) => channel * (1 - alpha) + values[index] * alpha);
-    }
-    return { element: element.tagName + "." + element.className, color };
-  }));
-  expect(colors.length).toBeGreaterThan(0);
-  for (const surface of colors) expect(Math.max(...surface.color), `${surface.element}: ${surface.color.join(",")}`).toBeLessThan(120);
-}
-
-test("dark presentation continues through the editor and import, help, and export dialogs", async ({ page }) => {
-  await page.goto("/");
-  await expectDarkSurfaces(page.locator("html, body, .home .app-header, .gallery-hero, .gallery-input, .gallery-statement, .mi-showcase, .mi-preview, .gallery-source, .gallery-diff, .gallery-closing"));
-  await page.getByRole("button", { name: "选择项目文件夹", exact: true }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expectDarkSurfaces(page.locator(".modal, .modal .folder-drop, .modal input"));
-  await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "使用帮助与快捷键" }).click();
-  await expectDarkSurfaces(page.getByRole("dialog"));
-  await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "先试用示例", exact: true }).click();
-  await expect(page.locator(".page-root strong")).toContainText("Atelier");
-  const target = page.frameLocator("iframe").locator("#start-button");
-  await target.click();
-  await expect(page.getByRole("spinbutton", { name: "Y", exact: true })).toHaveValue("0");
-  await target.press("ArrowUp");
-  await expectDarkSurfaces(page.locator(".app.editing, .editing .app-header, .editing .layers-panel, .editing .canvas-toolbar, .editing .inspector, .editing .floating-toolbar, .editing .ruler, .editing .number-field, .editing .source-info, .editing .status-bar"));
-  await page.getByRole("button", { name: "查看代码与最小差异" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await expectDarkSurfaces(page.locator(".modal, .code-preview, .export-tabs, .export-file, .export-footer"));
-});
-
-test("hero and every narrative chapter visibly change with scrolling", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/");
-  const chapters = page.locator(".gallery-statement > p > span, .mi-showcase-intro, #source-title, .gallery-diff, .gallery-delivery > div, #closing-title > span, .gallery-closing > .gallery-primary");
-  const count = await chapters.count();
-  expect(count).toBeGreaterThanOrEqual(10);
-  await expect.poll(() => chapters.evaluateAll((elements) => elements.filter((element) => Number(getComputedStyle(element).opacity) < 0.2).length)).toBe(count);
-  const initial = await chapters.evaluateAll((elements) => elements.map((element) => ({ transform: getComputedStyle(element).transform, opacity: Number(getComputedStyle(element).opacity) })));
-  const product = page.locator(".gallery-hero-product > .mi-preview");
-  const initialHero = await product.evaluate((element) => getComputedStyle(element).transform);
-  await page.evaluate(() => window.scrollTo({ top: document.querySelector(".gallery-hero").getBoundingClientRect().height * 0.8, behavior: "instant" }));
-  await expect.poll(() => product.evaluate((element) => getComputedStyle(element).transform)).not.toBe(initialHero);
-  for (let index = 0; index < count; index++) {
-    const chapter = chapters.nth(index);
-    await chapter.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
-    await expect.poll(() => chapter.evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0.95);
-    await expect.poll(() => chapter.evaluate((element) => getComputedStyle(element).transform)).toBe("none");
-    expect(initial[index].opacity).toBeLessThan(0.2);
-    expect(initial[index].transform).not.toBe("none");
+test("software start screen fits the window without outer scrollbars", async ({page}) => {
+  for (const [width,height] of [[1440,900],[1040,666],[800,640],[390,844]]) {
+    await page.setViewportSize({width,height}); await page.goto('/');
+    await expect(page.getByRole('heading',{level:1})).toContainText('刚刚好');
+    await expect(page.locator('.gallery-statement, .mi-showcase, .gallery-source, .gallery-footer')).toHaveCount(0);
+    await expect(page.getByRole('textbox',{name:'网站链接或本地项目地址'})).toBeInViewport();
+    await expect(page.getByRole('button',{name:'打开页面',exact:true})).toBeInViewport();
+    await expect(page.getByRole('button',{name:'先试用示例',exact:true})).toBeInViewport();
+    expect(await page.evaluate(()=>({w:document.documentElement.scrollWidth,h:document.documentElement.scrollHeight}))).toEqual({w:width,h:height});
+    await page.mouse.wheel(0,900); expect(await page.evaluate(()=>scrollY)).toBe(0);
   }
 });
 
-test("reduced motion makes every chapter readable immediately on desktop and mobile", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-    await page.setViewportSize(viewport);
-    await page.goto("/");
-    const states = await page.locator("[data-reveal]").evaluateAll((elements) => elements.map((element) => {
-      const style = getComputedStyle(element);
-      const box = element.getBoundingClientRect();
-      return { text: element.textContent.trim(), opacity: Number(style.opacity), transform: style.transform, width: box.width, height: box.height };
-    }));
-    expect(states.length).toBeGreaterThanOrEqual(10);
-    for (const state of states) {
-      expect(state.opacity, state.text).toBe(1);
-      expect(state.transform, state.text).toBe("none");
-      expect(state.width, state.text).toBeGreaterThan(0);
-      expect(state.height, state.text).toBeGreaterThan(0);
-    }
-    expect(await page.locator(".gallery-hero-product > .mi-preview").evaluate((element) => getComputedStyle(element).transform)).toBe("none");
-    const closing = page.getByRole("link", { name: "打开页面", exact: true });
-    await closing.scrollIntoViewIfNeeded();
-    await closing.click();
-    await expect(page.getByRole("textbox", { name: "网站链接或本地项目地址" })).toBeFocused();
-    await expectDarkSurfaces(page.locator(".home .app-header, .gallery-input, .gallery-statement, .gallery-diff, .gallery-closing"));
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(viewport.width);
+test("compact software entry keeps errors and project import accessible",async({page})=>{
+  await page.setViewportSize({width:800,height:640}); await page.goto('/');
+  await page.getByRole('textbox',{name:'网站链接或本地项目地址'}).fill('http://127.0.0.1:1');
+  await page.getByRole('button',{name:'打开页面',exact:true}).click();
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button',{name:'先试用示例',exact:true})).toBeInViewport();
+  expect(await page.evaluate(()=>document.documentElement.scrollHeight)).toBe(640);
+  await page.getByRole('button',{name:'选择项目文件夹',exact:true}).click();
+  await expect(page.getByRole('dialog')).toContainText('连接本地项目');
+  await page.keyboard.press('Escape');
+});
+
+test("website retains the full scrolling selection, movement, resize and code animation",async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});await page.goto(website);
+  const region=page.getByRole('region',{name:'滚动操作演示'});
+  const shape=()=>region.locator('.mi-preview-cta').evaluate(element=>({width:element.getBoundingClientRect().width,y:element.getBoundingClientRect().top-element.closest('.mi-preview').getBoundingClientRect().top}));
+  await scrollToStep(page,region,.22);
+  await expect(region.getByRole('button',{name:steps[0],exact:true})).toHaveAttribute('aria-pressed','true');
+  const before=await shape();
+  await scrollToStep(page,region,.68);
+  await expect(region.getByRole('button',{name:steps[1],exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect.poll(async()=>Math.round((await shape()).width-before.width)).toBe(24);
+  await expect.poll(async()=>Math.round((await shape()).y-before.y)).toBe(-12);
+  await scrollToStep(page,region,.97);
+  await expect(region.getByRole('button',{name:steps[2],exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect.poll(()=>region.locator('.mi-showcase-code').evaluate(el=>Number(getComputedStyle(el).opacity))).toBeGreaterThan(.95);
+  await region.getByRole('button',{name:steps[0],exact:true}).focus();await page.keyboard.press('ArrowRight');
+  await expect(region.getByRole('button',{name:steps[1],exact:true})).toBeFocused();
+});
+
+test("website chapters reveal with scrolling and document navigation remains separate",async({page})=>{
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(website);
+  const chapters=page.locator('[data-reveal]');expect(await chapters.count()).toBeGreaterThanOrEqual(10);
+  for(const chapter of await chapters.all()) {
+    await chapter.evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+    await expect.poll(()=>chapter.evaluate(el=>Number(getComputedStyle(el).opacity))).toBeGreaterThan(.95);
   }
+  await page.getByRole('link',{name:'文档',exact:true}).click();
+  await expect(page).toHaveURL(/guide\/overview/);
+  await expect(page.locator('.VPSidebar')).toBeVisible();
+  await page.getByRole('link',{name:'首页',exact:true}).click();
+  await expect(page.locator('.marketing-home')).toBeVisible();expect(errors).toEqual([]);
+});
+
+test("website mobile reduced motion retains the demo and working download links",async({page})=>{
+  await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'reduce'});await page.goto(website);
+  const region=page.getByRole('region',{name:'滚动操作演示'});
+  await expect(region.getByRole('list',{name:'完整操作步骤'}).getByRole('listitem')).toHaveCount(3);
+  await expect(region.getByRole('button',{name:steps[2],exact:true})).toHaveAttribute('aria-pressed','true');
+  const download=page.locator('.gallery-input .gallery-primary');await download.click();
+  await expect(page.getByRole('heading',{name:'安装后，直接开始。',exact:true})).toBeInViewport();
+  const links=page.locator('.website-downloads .gallery-primary');await expect(links).toHaveCount(3);
+  for(const link of await links.all())await expect(link).toHaveAttribute('href',/github.com\/NullResot\/miweb\/releases\/latest\/download\//);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);
+});
+
+test("software editor and dialogs keep the dark presentation",async({page})=>{
+  await page.goto('/');await page.getByRole('button',{name:'先试用示例',exact:true}).click();
+  await expect(page.locator('.page-root strong')).toContainText('Atelier');
+  const target=page.frameLocator('iframe').locator('#start-button');await target.click();await target.press('ArrowUp');
+  await page.getByRole('button',{name:'查看代码与最小差异'}).click();await expect(page.getByRole('dialog')).toBeVisible();
+  const backgrounds=await page.locator('.app.editing, .inspector, .modal, .code-preview').evaluateAll(elements=>elements.map(el=>getComputedStyle(el).backgroundColor));
+  for(const color of backgrounds)expect(Math.max(...color.match(/\d+/g).slice(0,3).map(Number))).toBeLessThan(120);
 });

@@ -188,3 +188,33 @@ body { background: #000; }
   [data-reveal], [data-reveal].reveal-pending { opacity: 1; transform: none; transition: none; }
   .gallery-home button:active:not(:disabled), .gallery-primary:active { transform: none; }
 }
+
+/* The desktop start screen occupies one window; the website keeps the full story. */
+.app.home { height: 100dvh; min-height: 0; display: flex; flex-direction: column; overflow: clip; }
+.app.home .app-header { position: relative; flex: 0 0 58px; }
+.app.home .gallery-home--compact { flex: 1; min-height: 0; width: 100%; }
+.gallery-home--compact .gallery-hero { height: 100%; padding: 22px 36px 28px; gap: 18px; }
+.gallery-home--compact .gallery-hero-bottom { flex: 0 0 auto; margin-top: 0; gap: 42px; }
+.gallery-home--compact .gallery-hero-product { flex: 1; min-height: 0; width: min(100%, 1000px); }
+.gallery-fit-box { width: 100%; height: 100%; position: relative; }
+.gallery-fit-content { position: absolute; width: 100%; max-width: 1000px; top: 50%; left: 50%; transform: translate(-50%, -50%); transform-origin: center; }
+.gallery-home--compact .gallery-hero h1 { font-size: clamp(40px, 4.5vw, 64px); }
+.gallery-home--compact .gallery-intro { margin-bottom: 14px; }
+.gallery-home--compact .gallery-entry-links { margin-top: 8px; }
+.gallery-home--compact .gallery-error { padding: 8px 12px; margin-top: 8px; }
+.gallery-home--compact .gallery-recent { margin-top: 6px; flex-wrap: nowrap; }
+.gallery-home--compact .gallery-recent > span { flex-shrink: 0; }
+.gallery-home--compact .gallery-recent button { min-width: 0; }
+@media (max-width: 767px) {
+  .gallery-home--compact .gallery-hero { padding: 16px 20px 22px; gap: 16px; }
+  .gallery-home--compact .gallery-hero-product { order: -1; margin-top: 0; }
+  .gallery-home--compact .gallery-hero-bottom { margin-top: 0; }
+  .gallery-home--compact .gallery-hero h1 { font-size: 38px; }
+  .gallery-home--compact .gallery-intro { margin: 12px 0; font-size: 14px; }
+}
+@media (max-height: 700px) {
+  .gallery-home--compact .gallery-hero { padding-top: 12px; padding-bottom: 16px; gap: 10px; }
+  .gallery-home--compact .gallery-hero h1 { font-size: 40px; }
+  .gallery-home--compact .gallery-intro { font-size: 14px; }
+  .gallery-home--compact .gallery-input { min-height: 52px; }
+}
