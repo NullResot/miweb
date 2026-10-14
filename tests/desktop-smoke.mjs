@@ -27,7 +27,8 @@ async function waitUntil(action, message, timeout = 15000) {
 }
 
 async function returnHome(page) {
-  await page.getByRole("button", { name: "微调 miweb" }).click();
+  // Compact windows hide the English brand text; the home action is stable.
+  await page.getByTitle("返回开始页", { exact: true }).click();
   const confirmation = page.getByRole("dialog").getByRole("button", { name: "打开新页面", exact: true });
   if (await confirmation.isVisible().catch(() => false)) await confirmation.click();
   await page.getByRole("button", { name: "先试用示例" }).waitFor();

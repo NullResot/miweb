@@ -82,6 +82,13 @@ jobs:
           $installer = Get-Item -LiteralPath release/Miweb-Setup-x64.exe
           $checksum = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
           "$checksum  $($installer.Name)" | Set-Content -LiteralPath release/SHA256SUMS.txt -Encoding utf8NoBOM
+      - name: Upload desktop failure evidence
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desktop-failure-evidence
+          path: test-results/desktop-failure.png
+          if-no-files-found: ignore
       - name: Upload tested installer
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
