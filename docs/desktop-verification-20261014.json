@@ -1,0 +1,31 @@
+{
+  "version": "0.2.1",
+  "sourceCommit": "4b34f009c4cfecbd15eafb886615f00295c5ce9c",
+  "documentation": "https://nullresot.github.io/miweb/",
+  "release": "https://github.com/NullResot/miweb/releases/tag/v0.2.1",
+  "download": "https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe",
+  "pagesRun": "https://github.com/NullResot/miweb/actions/runs/38558457469",
+  "desktopRun": "https://github.com/NullResot/miweb/actions/runs/38558457323",
+  "installerBytes": 219203516,
+  "sha256": "a269ae5d627089bf2d6648f29688d1116f573a624c359a44bc456703763a266e",
+  "codeSigned": false,
+  "verified": {
+    "windowsUnitTests": 33,
+    "chromiumIntegrationTests": 20,
+    "browserE2E": 24,
+    "packagedDesktopChecks": 7,
+    "installedDesktopChecks": 7,
+    "publicDocsRoutes": 9,
+    "docsViewportWidths": [
+      1440,
+      390
+    ],
+    "anonymousDownloadHTTP": 200,
+    "systemNodeNotOnPath": true,
+    "installedReactAndVueSourceExport": true,
+    "installedPublicURLCapture": true,
+    "installedSourceMatchesReleaseCommit": true,
+    "installerExitCode": 0,
+    "uninstalledPayloadAndShortcutsRemoved": true
+  }
+}

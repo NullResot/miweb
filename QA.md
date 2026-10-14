@@ -90,3 +90,33 @@ HTTPS 测试使用原 deploy/nginx.conf、临时受信任自签名证书和 127.
 - 公开服务器不能读取访问者电脑的路径或 localhost；使用文件夹上传，或在该电脑运行 Miweb。
 - 会话存于单个服务进程，重启/过期后需重新导入；浏览器改动缓存不等于服务端永久保存。没有独立账户、团队权限和多副本持久化。
 - 此次未做生产级并发压力测试；容器的 CPU/内存限制是运行配置，不是吞吐容量承诺。
+
+
+## Desktop and static documentation migration (2026-10-14)
+
+The public website is now the VitePress documentation site at https://nullresot.github.io/miweb/. The source remains in this repository; the editor is delivered through a Windows x64 Electron installer. GitHub Pages publishes only static documentation, not a Node/Chromium service.
+
+Verified before release:
+
+- 33 unit tests passed, including desktop frame/API trust and Windows canonical project-path cases.
+- 20 Chromium integration tests passed. Project aliases resolve correctly; child directory links cannot escape the allowed project root.
+- 24 browser E2E tests passed for selection, resizing, history, imports, source/patch export and responsive behavior. Desktop URL normalization is additionally covered by the packaged desktop smoke test.
+- Development and unpacked desktop smoke tests passed: authenticated random loopback server, sandboxed renderer, original-source export/clipboard, patch download, native directory picker, local URL snapshots, denied popup/navigation and shutdown cleanup.
+- Static docs built successfully. All 9 public pages were inspected at desktop/mobile widths; navigation, Chinese local search and search-result links worked without document overflow, resource errors or script exceptions.
+- The GitHub Windows runner exposed a realpath-versus-raw-root mismatch for short/case-aliased temporary directories. It was reproduced locally and fixed before the v0.2.0 release; the release workflow's Windows unit gate passed.
+
+Release gate: the tagged GitHub Actions workflow must build, pass integration and packaged desktop tests, and publish the installer with SHA256SUMS.txt. Completion additionally requires downloading that exact release asset, verifying its hash, and testing actual installation/launch/uninstall. Evidence for those final steps is appended after they finish; the older pre-redesign Ubuntu archive and images are not release evidence for the desktop app.
+
+The Windows package is not code-signed; SmartScreen/unknown-publisher prompts are documented. macOS/Linux installers have not been published. Development-tool advisories are not equivalent to runtime findings; the current npm production-only dependency audit reports zero known advisories, not a guarantee of security.
+
+
+Final v0.2.1 release verification completed:
+
+- Tagged workflow https://github.com/NullResot/miweb/actions/runs/38558457323 succeeded: 33 Windows units, 20 integrations, installer build, 7 actual packaged desktop checks, and public Release upload. The compact-window smoke selector was corrected to use the home action's title, which remains visible when the English brand text is hidden.
+- Downloaded the published `Miweb-Setup-x64.exe` (219,203,516 bytes). SHA256 matched `SHA256SUMS.txt` and GitHub's asset digest: `a269ae5d627089bf2d6648f29688d1116f573a624c359a44bc456703763a266e`. The stable `releases/latest/download` URL is accessible anonymously with HTTP 200.
+- Ran the real installer into an isolated workspace test directory. Installation exited 0 and created valid desktop/start-menu shortcuts. Installed backend/shell source files matched the release commit after newline normalization.
+- Ran all 7 desktop smoke checks against the installed executable with system Node removed from PATH. Additionally verified React and Vue project compilation/source export, and importing the public GitHub Pages documentation URL in that installed app. No separately installed Node runtime or system Playwright cache was used by the app.
+- Ran the real uninstaller. Final state confirms executable, installation directory, desktop shortcut and start-menu shortcut are removed. The installer launcher exits before its cleanup helper; verification waited for final filesystem state rather than treating the launcher's exit alone as completion.
+- Public documentation workflow https://github.com/NullResot/miweb/actions/runs/38558457469 succeeded; the 9-page desktop/mobile public-site checks and search/navigation checks also passed.
+
+Machine-readable final evidence is in [desktop-verification-20261014.json](docs/desktop-verification-20261014.json). The local installer at `release/Miweb-Setup-x64.exe` is the verified GitHub release asset; the earlier local unpacked debug build is not the release deliverable.
