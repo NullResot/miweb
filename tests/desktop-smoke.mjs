@@ -25,6 +25,7 @@ const verification = {
   hostArchitecture: process.arch,
   dialogAutomation: "Native picker responses and download destination are controlled through Electron APIs; OS dialog UI is not automated.",
   checks: report,
+  previewClicks: [],
 };
 function checked(message) { report.push(message); console.log(`PASS ${message}`); }
 const env = { ...process.env, MIWEB_DESKTOP_TEST: "1", MIWEB_DESKTOP_USER_DATA: path.join(temporary, "user-data") };
@@ -60,18 +61,73 @@ async function returnHome(page) {
 
 async function clickPreview(page, selector) {
   // Electron and the installed Playwright driver can ship different Chromium
-  // revisions. Read the transformed iframe geometry rather than relying on
-  // cross-frame CDP bounding boxes, then send a real mouse click to the canvas.
-  const frame = await page.locator("iframe").evaluate((element) => {
+  // revisions. Read each document's own geometry, without cross-frame CDP
+  // bounding boxes. A recreated canvas starts with a provisional fit scale;
+  // measuring its frame before the target exists mixes two different layouts.
+  const iframe = page.locator("iframe");
+  const target = page.frameLocator("iframe").locator(selector);
+  const diagnostic = { selector, page: page.url(), attempts: 0 };
+  verification.previewClicks.push(diagnostic);
+  await target.waitFor({ state: "visible", timeout: 15000 });
+  // This overlay is removed only after the iframe bridge installs its input
+  // listeners and sends ready. A visible target alone does not establish that.
+  await page.locator(".frame-loading").waitFor({ state: "hidden", timeout: 15000 });
+
+  const measure = (element) => {
     const rect = element.getBoundingClientRect();
-    return { x: rect.x, y: rect.y, scaleX: rect.width / element.clientWidth, scaleY: rect.height / element.clientHeight };
-  });
-  const element = await page.frameLocator("iframe").locator(selector).evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
-  });
-  await page.mouse.click(frame.x + element.x * frame.scaleX, frame.y + element.y * frame.scaleY);
-  await page.getByRole("spinbutton", { name: "X", exact: true }).waitFor({ state: "visible" });
+    return { x: rect.x, y: rect.y, width: rect.width, height: rect.height, clientWidth: element.clientWidth, clientHeight: element.clientHeight };
+  };
+  const stableGeometry = async (element) => {
+    const sample = () => {
+      const rect = element.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, width: rect.width, height: rect.height, clientWidth: element.clientWidth, clientHeight: element.clientHeight };
+    };
+    const deadline = performance.now() + 5000;
+    let previous;
+    let stableFrames = 0;
+    return new Promise((resolve, reject) => {
+      const next = () => {
+        const current = sample();
+        const stable = previous && Object.keys(current).every((key) => Math.abs(current[key] - previous[key]) < 0.1);
+        stableFrames = stable && document.fonts.status !== "loading" ? stableFrames + 1 : 0;
+        previous = current;
+        if (stableFrames >= 3 && current.width > 0 && current.height > 0) return resolve(current);
+        if (performance.now() > deadline) return reject(new Error(`Preview layout did not stabilize: ${JSON.stringify(current)}`));
+        requestAnimationFrame(next);
+      };
+      requestAnimationFrame(next);
+    });
+  };
+  const unchanged = (before, after) => Object.keys(before).every((key) => Math.abs(before[key] - after[key]) < 0.1);
+  const deadline = Date.now() + 15000;
+  while (Date.now() < deadline) {
+    diagnostic.attempts += 1;
+    const targetBefore = await target.evaluate(stableGeometry);
+    const frame = await iframe.evaluate(stableGeometry);
+    const element = await target.evaluate(measure);
+    const frameAfter = await iframe.evaluate(measure);
+    diagnostic.frame = frameAfter;
+    diagnostic.target = element;
+    if (!unchanged(targetBefore, element) || !unchanged(frame, frameAfter)) continue;
+    const point = {
+      x: frame.x + (element.x + element.width / 2) * frame.width / frame.clientWidth,
+      y: frame.y + (element.y + element.height / 2) * frame.height / frame.clientHeight,
+    };
+    diagnostic.point = point;
+    diagnostic.frameHit = await iframe.evaluate((element, point) => document.elementFromPoint(point.x, point.y) === element, point);
+    diagnostic.targetHit = await target.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+      return hit === element || element.contains(hit);
+    });
+    assert.equal(diagnostic.frameHit, true, `Preview click is occluded outside the iframe: ${JSON.stringify(diagnostic)}`);
+    assert.equal(diagnostic.targetHit, true, `Preview target center is occluded: ${JSON.stringify(diagnostic)}`);
+    await page.mouse.click(point.x, point.y);
+    await page.getByRole("spinbutton", { name: "X", exact: true }).waitFor({ state: "visible", timeout: 15000 });
+    diagnostic.selected = true;
+    return;
+  }
+  throw new Error(`Preview geometry kept changing before the real mouse click: ${JSON.stringify(diagnostic)}`);
 }
 
 try {

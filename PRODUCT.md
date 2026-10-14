@@ -4,7 +4,7 @@
 
 ## Platform
 
-desktop (Windows x64) + static documentation website
+desktop (Windows x64, macOS Apple Silicon / Intel) + static documentation website
 
 ## Users
 
@@ -16,7 +16,7 @@ desktop (Windows x64) + static documentation website
 
 ## Positioning
 
-用户明确主打轻量、即开即用。对外网站为 GitHub Pages 静态文档；产品以内置运行环境的桌面安装包交付。优先减少接入、操作和带走改动的成本，不以完整建站平台的功能数量为目标。
+用户明确主打轻量、即开即用。对外网站为 GitHub Pages 静态文档；产品以内置运行环境的桌面安装包交付；Windows 使用每用户一键安装，macOS 使用原生架构 DMG。优先减少接入、操作和带走改动的成本，不以完整建站平台的功能数量为目标。
 
 ## Capabilities and Constraints
 
