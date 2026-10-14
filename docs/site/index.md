@@ -9,7 +9,12 @@ Miweb（微调）是一款轻量的网页布局微调工具。AI 生成的页面
 
 安装桌面版，打开网页或本地项目，选中元素，用鼠标拖动或方向键微调，再复制代码带回项目。编辑过程不需要 AI 模型或 API Key。
 
-<a class="download-link" href="https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe">下载 Windows 桌面版</a>
+<a class="download-link" href="https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe">Windows x64</a>
+<a class="download-link" href="https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-arm64.dmg">macOS · Apple 芯片</a>
+<a class="download-link" href="https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-x64.dmg">macOS · Intel</a>
+
+Windows 10 / 11 x64，或 macOS 13 Ventura 及以上。Mac 类型可在苹果菜单的“关于本机”中查看。
+
 [安装说明](/guide/install) · [第一次微调](/guide/getting-started)
 
 ![Miweb 工作台：选中按钮，调整位置与尺寸，定位对应源码](/editor-preview.png)

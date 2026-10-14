@@ -14,6 +14,8 @@ if (process.env.MIWEB_DESKTOP_TEST === "1" && process.env.MIWEB_DESKTOP_USER_DAT
 let window;
 let backend;
 let origin;
+let appSession;
+let openingWindow;
 let quitting = false;
 let shutdownPromise;
 const docsUrl = "https://nullresot.github.io/miweb/";
@@ -21,7 +23,10 @@ const hasLock = app.requestSingleInstanceLock();
 if (!hasLock) app.quit();
 
 app.on("second-instance", () => {
-  if (!window || window.isDestroyed()) return;
+  if (!window || window.isDestroyed()) {
+    if (origin && !quitting) void createWindow().catch(showStartupError);
+    return;
+  }
   if (window.isMinimized()) window.restore();
   window.show();
   window.focus();
@@ -149,12 +154,32 @@ function registerPicker() {
 }
 
 async function createWindow() {
-  const key = randomBytes(32).toString("hex");
-  origin = await startBackend(key);
-  // A memory-only partition prevents expired backend sessions and remembered
-  // auth keys from carrying across launches with a new random server origin.
-  const ses = session.fromPartition(`miweb-${randomBytes(12).toString("hex")}`);
-  configureSession(ses, key);
+  if (quitting) return;
+  if (window && !window.isDestroyed()) {
+    if (window.isMinimized()) window.restore();
+    window.show();
+    window.focus();
+    return;
+  }
+  // Dock activation and a second launch can arrive together. Keep one window,
+  // backend, session, and native IPC handler throughout this application run.
+  if (openingWindow) return openingWindow;
+  openingWindow = openWindow().finally(() => { openingWindow = undefined; });
+  return openingWindow;
+}
+
+async function openWindow() {
+  if (!origin) {
+    const key = randomBytes(32).toString("hex");
+    origin = await startBackend(key);
+    // This partition lives for one application run, including Dock reopening.
+    // No backend auth key or stale port is persisted to disk across launches.
+    appSession = session.fromPartition(`miweb-${randomBytes(12).toString("hex")}`);
+    configureSession(appSession, key);
+    registerPicker();
+    configureMenu();
+  }
+  if (quitting) return;
   const icon = path.join(__dirname, "assets", "icon.png");
   window = new BrowserWindow({
     title: "Miweb 微调",
@@ -167,7 +192,7 @@ async function createWindow() {
     ...(fs.existsSync(icon) ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
-      session: ses,
+      session: appSession,
       nodeIntegration: false,
       nodeIntegrationInSubFrames: false,
       contextIsolation: true,
@@ -187,14 +212,17 @@ async function createWindow() {
   });
   window.webContents.on("will-attach-webview", (event) => event.preventDefault());
   window.once("ready-to-show", () => window.show());
-  registerPicker();
+  window.once("closed", () => { window = undefined; });
+  await window.loadURL(origin + "/");
+}
+
+function configureMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     { label: "Miweb", submenu: [{ role: "about", label: "关于 Miweb" }, { type: "separator" }, { role: "quit", label: "退出" }] },
     { label: "编辑", submenu: [{ role: "undo", label: "撤销" }, { role: "redo", label: "重做" }, { type: "separator" }, { role: "cut", label: "剪切" }, { role: "copy", label: "复制" }, { role: "paste", label: "粘贴" }, { role: "selectAll", label: "全选" }] },
     { label: "窗口", submenu: [{ role: "minimize", label: "最小化" }, { role: "close", label: "关闭" }] },
     { label: "帮助", submenu: [{ label: "使用文档", click: () => { void shell.openExternal(docsUrl); } }] },
   ]));
-  await window.loadURL(origin + "/");
 }
 
 async function stopBackend() {
@@ -217,8 +245,16 @@ app.on("before-quit", (event) => {
   quitting = true;
   void stopBackend().finally(() => app.quit());
 });
-app.on("window-all-closed", () => app.quit());
-if (hasLock) app.whenReady().then(createWindow).catch(async (error) => {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+function showStartupError(error) {
   dialog.showErrorBox("无法启动 Miweb", error.message || "本地服务未能启动。");
   app.quit();
-});
+}
+if (hasLock) app.whenReady().then(async () => {
+  await createWindow();
+  app.on("activate", () => {
+    if (!quitting && (!window || window.isDestroyed())) void createWindow().catch(showStartupError);
+  });
+}).catch(showStartupError);

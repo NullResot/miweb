@@ -4,7 +4,7 @@
 
 ## 环境
 
-需要 Node.js 22.12+，推荐 Node.js 24，以及 Git。构建 Windows 安装包优先在 Windows x64 环境中进行。
+需要 Node.js 22.12+，推荐 Node.js 24，以及 Git。Windows 安装包在 Windows x64 环境中构建；macOS 安装包在对应架构的原生 Mac 上构建，需要 macOS 13 Ventura 或更高版本。
 
 ```sh
 git clone https://github.com/NullResot/miweb.git
@@ -21,7 +21,9 @@ npm run browser:install
 npm run desktop:dev
 ```
 
-这条命令先构建工作台，再启动 Electron。桌面主进程启动仅监听本机的预览服务，并提供系统文件夹选择。关闭应用时，本机服务一并退出。
+这条命令先构建工作台，再启动 Electron。桌面主进程启动仅监听本机的预览服务，并提供系统文件夹选择。退出应用时，本机服务一并退出。
+
+macOS 关闭窗口后，应用与本机服务仍留在后台；点击 Dock 中的 Miweb 可重新打开窗口。使用“Miweb → 退出 Miweb”或 ⌘ + Q 完全退出。
 
 ## 打包 Windows 安装包
 
@@ -38,6 +40,26 @@ npm run desktop:pack
 ```
 
 打包配置位于 `electron-builder.config.cjs`，结果输出到 `release`，安装包名称为 `Miweb-Setup-x64.exe`。发布前应在目标系统验证生成的安装包，而不是只检查源码开发窗口。
+
+## 打包 macOS 安装包
+
+在 Apple 芯片或 Intel Mac 上执行：
+
+```sh
+npm run desktop:dist:mac
+```
+
+命令为当前机器架构构建工作台、准备对应的 Chromium，再生成 DMG 和 ZIP。Apple 芯片输出 `release/Miweb-mac-arm64.dmg`，Intel 输出 `release/Miweb-mac-x64.dmg`。
+
+如果只需要验证可运行的 `.app` 目录，使用：
+
+```sh
+npm run desktop:pack:mac
+```
+
+Chromium 与 Electron 应用必须使用相同架构，请在对应的原生 macOS 环境中分别构建 arm64 和 x64，不要将另一种架构或 Windows 的浏览器文件放入安装包。
+
+默认使用临时签名（ad-hoc），没有 Developer ID 签名或 Apple 公证。它不能消除用户首次打开时的 Gatekeeper 提示，处理方式见 [安装说明](/guide/install#macos-首次打开被拦截)。正式发布前应验证两种架构的安装、启动、项目预览和页面捕获。
 
 ## 浏览器开发入口
 
@@ -86,7 +108,7 @@ npm run docs:build
 | `desktop/main.cjs` | 桌面窗口、本机服务生命周期与原生目录选择 |
 | `desktop/preload.cjs` | 受限的桌面能力桥接 |
 | `scripts/stage-browser.mjs` | 准备打包所需的 Chromium |
-| `electron-builder.config.cjs` | Windows 安装包配置 |
+| `electron-builder.config.cjs` | Windows 与 macOS 安装包配置 |
 | `server/index.mjs` | 本机预览服务与接口 |
 | `server/capture.mjs` | 页面渲染与安全快照 |
 | `server/project.mjs` | 只读项目预览与临时构建 |

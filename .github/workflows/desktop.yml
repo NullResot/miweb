@@ -81,12 +81,12 @@ jobs:
         run: |
           $installer = Get-Item -LiteralPath release/Miweb-Setup-x64.exe
           $checksum = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$checksum  $($installer.Name)" | Set-Content -LiteralPath release/SHA256SUMS.txt -Encoding utf8NoBOM
+          "$checksum  $($installer.Name)" | Set-Content -LiteralPath release/SHA256SUMS-windows-x64.txt -Encoding utf8NoBOM
       - name: Upload desktop failure evidence
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: desktop-failure-evidence
+          name: desktop-failure-evidence-windows-x64
           path: test-results/desktop-failure.png
           if-no-files-found: ignore
       - name: Upload tested installer
@@ -95,25 +95,110 @@ jobs:
           name: miweb-windows-x64
           path: |
             release/Miweb-Setup-x64.exe
-            release/SHA256SUMS.txt
+            release/SHA256SUMS-windows-x64.txt
+          if-no-files-found: error
+
+  macos:
+    name: macOS ${{ matrix.arch }} installer
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+            app-directory: mac-arm64
+          - arch: x64
+            runner: macos-15-intel
+            app-directory: mac
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      MAC_APP_ARCH: ${{ matrix.arch }}
+      MAC_APP_DIRECTORY: ${{ matrix.app-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up native Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Verify native build architecture
+        run: node -e "if (process.platform !== 'darwin' || process.arch !== process.env.MAC_APP_ARCH) throw new Error('Mac builds require the matching native runner');"
+      - name: Install dependencies
+        run: npm ci
+      - name: Check release version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: node -e "const p = require('./package.json'); if (process.env.RELEASE_TAG !== 'v' + p.version) throw new Error('Release tag must match package.json version');"
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Run unit tests
+        run: npm test
+      - name: Build native DMG and ZIP with bundled Chromium
+        run: npm run desktop:dist:mac
+      - name: Verify packaged application signature
+        run: |
+          app="$GITHUB_WORKSPACE/release/$MAC_APP_DIRECTORY/Miweb.app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+          printf 'DESKTOP_EXECUTABLE=%s\n' "$app/Contents/MacOS/Miweb" >> "$GITHUB_ENV"
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/desktop-resources/browsers
+      - name: Test packaged desktop application
+        run: node tests/desktop-smoke.mjs
+      - name: Test installation from the DMG
+        run: node tests/mac-install-smoke.mjs
+        env:
+          MAC_DMG_PATH: ${{ github.workspace }}/release/Miweb-mac-${{ matrix.arch }}.dmg
+      - name: Calculate installer checksums
+        run: |
+          cd release
+          shasum -a 256 "Miweb-mac-$MAC_APP_ARCH.dmg" "Miweb-mac-$MAC_APP_ARCH.zip" > "SHA256SUMS-mac-$MAC_APP_ARCH.txt"
+      - name: Upload macOS verification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desktop-verification-mac-${{ matrix.arch }}
+          path: |
+            test-results/desktop-*.png
+            test-results/mac-install-smoke.json
+          if-no-files-found: ignore
+      - name: Upload tested installers
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: miweb-mac-${{ matrix.arch }}
+          path: |
+            release/Miweb-mac-${{ matrix.arch }}.dmg
+            release/Miweb-mac-${{ matrix.arch }}.zip
+            release/SHA256SUMS-mac-${{ matrix.arch }}.txt
           if-no-files-found: error
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: windows
+    needs: [windows, macos]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
       actions: read
     steps:
-      - name: Download tested build
+      - name: Download tested Windows and macOS builds
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
-        run: gh run download "$RUN_ID" --name miweb-windows-x64 --dir release
-      - name: Publish Windows release
+        run: |
+          gh run download "$RUN_ID" --name miweb-windows-x64 --dir release
+          gh run download "$RUN_ID" --name miweb-mac-arm64 --dir release
+          gh run download "$RUN_ID" --name miweb-mac-x64 --dir release
+      - name: Merge and verify installer checksums
+        run: |
+          cat release/SHA256SUMS-windows-x64.txt release/SHA256SUMS-mac-arm64.txt release/SHA256SUMS-mac-x64.txt > release/SHA256SUMS.txt
+          cd release
+          sha256sum --check SHA256SUMS.txt
+      - name: Publish desktop release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -124,14 +209,19 @@ jobs:
             '' \
             '- Windows 10 / 11，x64。下载 `Miweb-Setup-x64.exe`，双击安装。' \
             '- 安装包目前未进行代码签名，Windows 可能显示未知发布者提示。' \
+            '- macOS 13 Ventura 或更新版本。Apple Silicon 下载 `Miweb-mac-arm64.dmg`，Intel 下载 `Miweb-mac-x64.dmg`。打开 DMG，将 Miweb 拖入 Applications。' \
+            '- Mac 应用使用 ad-hoc 签名，尚无 Apple Developer ID 签名和公证。首次启动可能需要在系统设置 > 隐私与安全性中选择“仍要打开”。' \
+            '- 同时提供两种 Mac 架构的 ZIP 归档。' \
             '- 导入本地项目或网页链接，在页面上微调布局，再导出代码。' \
-            '- `SHA256SUMS.txt` 提供安装包校验值。' \
+            '- `SHA256SUMS.txt` 提供所有安装包和 ZIP 的校验值。' \
             '' \
             "使用文档：https://${GH_REPO%/*}.github.io/${GH_REPO#*/}/" \
             > release-notes.md
+          assets=(release/Miweb-Setup-x64.exe release/Miweb-mac-arm64.dmg release/Miweb-mac-x64.dmg release/Miweb-mac-arm64.zip release/Miweb-mac-x64.zip release/SHA256SUMS.txt)
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" release/Miweb-Setup-x64.exe release/SHA256SUMS.txt --clobber
+            gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
+            gh release edit "$RELEASE_TAG" --notes-file release-notes.md
           else
-            gh release create "$RELEASE_TAG" release/Miweb-Setup-x64.exe release/SHA256SUMS.txt \
+            gh release create "$RELEASE_TAG" "${assets[@]}" \
               --verify-tag --title "Miweb $RELEASE_TAG" --notes-file release-notes.md
           fi

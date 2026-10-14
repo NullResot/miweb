@@ -2,7 +2,7 @@
 
 **轻量的桌面网页布局微调工具。为 AI 生成的前端，补上最后一点调整。**
 
-[下载 Windows 桌面版](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) · [使用文档](https://nullresot.github.io/miweb/) · [代码导出](#操作与代码导出) · [开发与构建](#开发与构建)
+[Windows x64](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) · [macOS Apple 芯片](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-arm64.dmg) · [macOS Intel](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-x64.dmg) · [使用文档](https://nullresot.github.io/miweb/) · [开发与构建](#开发与构建)
 
 AI 生成的页面已经差不多了，但按钮还想往上一点，卡片还想宽一点。
 
@@ -34,13 +34,19 @@ Miweb 让你直接在页面上调整这些细节：输入网页链接，或导�
 
 ## 安装桌面版
 
-下载 [Windows x64 安装包](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe)，双击安装，打开 Miweb 即可使用。支持 Windows 10 / 11 x64。
+| 系统 | 下载 | 安装方式 |
+| --- | --- | --- |
+| Windows 10 / 11 x64 | [Windows 安装包](https://github.com/NullResot/miweb/releases/latest/download/Miweb-Setup-x64.exe) | 双击安装，打开 Miweb |
+| macOS 13 Ventura 或更高版本，Apple 芯片 | [Apple 芯片 DMG](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-arm64.dmg) | 打开 DMG，将 Miweb 拖入“应用程序” |
+| macOS 13 Ventura 或更高版本，Intel 处理器 | [Intel DMG](https://github.com/NullResot/miweb/releases/latest/download/Miweb-mac-x64.dmg) | 打开 DMG，将 Miweb 拖入“应用程序” |
+
+不确定 Mac 类型时，打开苹果菜单的“关于本机”：显示“芯片”的选择 Apple 芯片版，显示 Intel“处理器”的选择 Intel 版。macOS 安装后推出磁盘映像，再从“应用程序”打开 Miweb。
 
 - 点击“选择项目文件夹”，使用系统目录选择窗口接入本地项目。
 - 粘贴公开网址或本地开发链接，导入当前页面。
 - 暂时没有项目，可以先点击“试用示例”。
 
-安装包包含编辑器和页面渲染器，不需要用户另外安装运行依赖。编辑服务仅监听本机，应用退出时关闭。当前版本未进行代码签名，Windows 可能提示未知发布者；安装包校验值见对应 [Release](https://github.com/NullResot/miweb/releases)。macOS / Linux 安装包尚未发布。
+安装包包含编辑器和页面渲染器，不需要用户另外安装运行依赖。编辑服务仅监听本机，应用退出时关闭。Windows 安装包未使用商业代码签名证书；macOS 应用仅使用临时签名（ad-hoc），没有 Developer ID 签名或 Apple 公证，系统可能拦截首次启动。请先确认下载来源并核对对应 [Release](https://github.com/NullResot/miweb/releases) 的校验值，再按 [安装说明](https://nullresot.github.io/miweb/guide/install.html#macos-首次打开被拦截) 处理。Linux 安装包尚未发布。
 
 完整步骤见 [安装说明](https://nullresot.github.io/miweb/guide/install.html) 和 [第一次微调](https://nullresot.github.io/miweb/guide/getting-started.html)。
 
@@ -138,13 +144,21 @@ npm run browser:install
 npm run desktop:dev
 ```
 
-构建 Windows x64 一键安装包：
+在 Windows x64 上构建一键安装包：
 
 ```sh
 npm run desktop:dist:win
 ```
 
-输出为 `release/Miweb-Setup-x64.exe`，包含 Chromium。打包过程可能下载运行环境。`npm run desktop:pack` 仅生成未安装的应用目录。
+输出为 `release/Miweb-Setup-x64.exe`。`npm run desktop:pack` 仅生成未安装的 Windows 应用目录。
+
+在 macOS 上构建当前机器架构的 DMG：
+
+```sh
+npm run desktop:dist:mac
+```
+
+Apple 芯片输出 `release/Miweb-mac-arm64.dmg`，Intel 输出 `release/Miweb-mac-x64.dmg`；`npm run desktop:pack:mac` 仅生成未安装的 `.app` 目录。请在对应架构的原生 macOS 环境打包，Chromium 与应用必须使用同一架构。安装包均包含 Chromium，打包过程可能下载运行环境。macOS 包默认采用临时签名，不执行 Apple 公证。
 
 公开网站现在是静态文档站，开发和构建方式如下：
 

@@ -1,6 +1,6 @@
 {
   "name": "miweb",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,7 +20,10 @@
     "desktop:dist:win": "npm run build && npm run desktop:stage && electron-builder --config electron-builder.config.cjs --win --x64 --publish never",
     "test:desktop": "node tests/desktop-smoke.mjs",
     "editor:dev": "node server/index.mjs",
-    "server:start": "node server/index.mjs --production"
+    "server:start": "node server/index.mjs --production",
+    "desktop:dist:mac": "node scripts/build-mac.mjs",
+    "desktop:pack:mac": "node scripts/build-mac.mjs --dir",
+    "test:mac-install": "node tests/mac-install-smoke.mjs"
   },
   "dependencies": {
     "@babel/parser": "^7.28.4",

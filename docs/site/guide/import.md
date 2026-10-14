@@ -8,6 +8,7 @@
 
 ```text
 D:\projects\my-site
+/Users/your-name/projects/my-site
 ```
 
 目录模式只读加载文件，不会覆盖原项目，不会执行项目的 npm 脚本或自定义构建配置。
