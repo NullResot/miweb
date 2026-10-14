@@ -260,7 +260,7 @@ try {
     await waitUntil(async () => (await page.getByRole("spinbutton", { name: "X", exact: true }).inputValue()) === "1", `${framework} source project could not be edited.`);
     await page.getByRole("button", { name: "复制代码", exact: true }).click();
     await page.getByRole("status").filter({ hasText: "源码已复制" }).waitFor();
-    assert.match(await application.evaluate(({ clipboard }) => clipboard.readText()), /translate[^\n]*1px 0px/);
+    await waitUntil(async () => /translate[^\n]*1px 0px/.test(await application.evaluate(({ clipboard }) => clipboard.readText())), `${framework} exported source did not reach the clipboard.`);
     assert.equal(await readFile(path.join(fixturePath, sourceFile), "utf8"), sourceBefore, "Export should leave the imported source intact.");
     checked(`Bundled compiler opens a real ${framework} project and exports its edited original source.`);
   }
